@@ -59,7 +59,7 @@ void LevelDBWrapper::init(const DataBaseConfig &config)
 
     logger(INFO) << "Opening DB in " << dataDir;
 
-    if (true == status.ok())
+    if (status.ok())
     {
         logger(INFO) << "DB opened in " << dataDir;
     }
