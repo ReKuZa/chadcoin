@@ -15,7 +15,6 @@ endif ()
 
 set(CMAKE_CONFIGURATION_TYPES Debug RelWithDebInfo Release CACHE TYPE INTERNAL)
 set(ARCH native CACHE STRING "CPU to build for: -march value or native")
-set(WITH_LEVELDB OFF CACHE STRING "Enable LevelDB")
 
 project(TurtleCoin)
 
@@ -91,11 +90,7 @@ else ()
     message(STATUS "OPTIMIZED_ARM_MULTIPLICATION: ENABLED")
 endif ()
 
-if (WITH_LEVELDB)
-    add_definitions(-DUSE_LEVELDB)
-endif ()
-
-if ((WITH_ZSTD) AND (NOT WITH_LEVELDB))
+if (WITH_ZSTD)
     add_definitions(-DENABLE_ZSTD_COMPRESSION)
 endif ()
 
@@ -314,15 +309,13 @@ add_subdirectory(src)
 
 ## We need to setup the RocksDB build environment to match our system
 if (NOT MSVC)
-  if (WITH_LEVELDB)
     execute_process(
          COMMAND ${CMAKE_COMMAND} ${CMAKE_CURRENT_SOURCE_DIR}/external/leveldb -DCMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} -DLEVELDB_BUILD_TESTS=OFF -DLEVELDB_BUILD_BENCHMARKS=OFF -DLEVELDB_INSTALL=OFF -B${PROJECT_BINARY_DIR}/leveldb
     )
     set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES "${PROJECT_BINARY_DIR}/leveldb/libleveldb.a")
-  else ()
+
     execute_process(
         COMMAND ${CMAKE_COMMAND} ${CMAKE_CURRENT_SOURCE_DIR}/external/rocksdb -DARCH=${ARCH} -DWITH_ZSTD=${WITH_ZSTD} -DWITH_LZ4=${WITH_LZ4} -DWITH_GFLAGS=0 -DCMAKE_BUILD_TYPE=MinSizeRel -DWITH_TESTS=OFF -DWITH_TOOLS=OFF -DPORTABLE=ON -B${PROJECT_BINARY_DIR}/rocksdb
     )
     set_directory_properties(PROPERTIES ADDITIONAL_MAKE_CLEAN_FILES "${PROJECT_BINARY_DIR}/rocksdb/librocksdb.a")
-  endif ()
 endif ()

@@ -33,20 +33,18 @@ void LevelDBWrapper::init(const DataBaseConfig &config)
     leveldb::DB* dbPtr;
 
     leveldb::Options dbOptions;
-#if defined(USE_LEVELDB)
-    logger(INFO) << "Daemon uses kSnappyCompression...";
-    dbOptions.compression = leveldb::kSnappyCompression;
-#else
-    logger(INFO) << "Daemon uses kNoCompression...";
-    dbOptions.compression = leveldb::kNoCompression;
-#endif
-    dbOptions.max_file_size = 1024 * 1024 * 1024; // 1024 MB
 
-    dbOptions.write_buffer_size =  static_cast<size_t>(config.getWriteBufferSize());
+    dbOptions.compression = config.compressionEnabled
+        ? leveldb::kSnappyCompression
+        : leveldb::kNoCompression;
 
-    dbOptions.max_open_files =  config.getMaxOpenFiles();
+    dbOptions.max_file_size = config.maxFileSize;
 
-    dbOptions.block_cache =  leveldb::NewLRUCache(config.getReadCacheSize());
+    dbOptions.write_buffer_size =  static_cast<size_t>(config.writeBufferSize);
+
+    dbOptions.max_open_files = config.maxOpenFiles;
+
+    dbOptions.block_cache = leveldb::NewLRUCache(config.readCacheSize);
 
     if (state.load() != NOT_INITIALIZED)
     {
@@ -203,7 +201,13 @@ std::error_code LevelDBWrapper::read(IReadBatch &batch)
     return std::error_code();
 }
 
+/* LevelDB is thread safe by default: https://github.com/google/leveldb/blob/master/doc/index.md#concurrency */
+std::error_code LevelDBWrapper::readThreadSafe(IReadBatch &batch)
+{
+    return read(batch);
+}
+
 std::string LevelDBWrapper::getDataDir(const DataBaseConfig &config)
 {
-    return config.getDataDir() + '/' + DB_NAME;
+    return config.dataDir + '/' + DB_NAME;
 }

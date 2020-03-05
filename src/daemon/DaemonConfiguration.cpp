@@ -153,31 +153,53 @@ namespace DaemonConfig
             cxxopts::value<std::vector<std::string>>(),
             "<ip:port>");
 
+        const std::string maxOpenFiles = 
+            "(default: " + std::to_string(CryptoNote::ROCKSDB_MAX_OPEN_FILES) 
+            + " (ROCKSDB), " + std::to_string(CryptoNote::LEVELDB_MAX_OPEN_FILES)
+            + " (LEVELDB))";
+
+        const std::string readCache = 
+            "(default: " + std::to_string(CryptoNote::ROCKSDB_READ_BUFFER_MB) 
+            + " (ROCKSDB), " + std::to_string(CryptoNote::LEVELDB_READ_BUFFER_MB)
+            + " (LEVELDB))";
+
+        const std::string writeBuffer = 
+            "(default: " + std::to_string(CryptoNote::ROCKSDB_WRITE_BUFFER_MB) 
+            + " (ROCKSDB), " + std::to_string(CryptoNote::LEVELDB_WRITE_BUFFER_MB)
+            + " (LEVELDB))";
+
         options.add_options("Database")
-#if defined(ENABLE_ZSTD_COMPRESSION) && !defined(USE_LEVELDB)
+            ("db-enable-level-db",
+             "Use LevelDB instead of RocksDB",
+             cxxopts::value<bool>()->default_value("false")->implicit_value("true"))
+
+#if defined(ENABLE_ZSTD_COMPRESSION)
             ("db-enable-compression",
              "Enable database compression",
              cxxopts::value<bool>()->default_value("false")->implicit_value("true"))
 #endif
-#if !defined(USE_LEVELDB)
-                ("db-max-open-files",
-                 "Number of files that can be used by the database at one time",
-                 cxxopts::value<int>()->default_value(std::to_string(config.dbMaxOpenFiles)),
-                 "#")(
-                    "db-read-buffer-size",
-                    "Size of the database read cache in megabytes (MB)",
-                    cxxopts::value<int>()->default_value(std::to_string(config.dbReadCacheSizeMB)),
-                    "#")(
-                    "db-threads",
-                    "Number of background threads used for compaction and flush operations",
-                    cxxopts::value<int>()->default_value(std::to_string(config.dbThreads)),
-                    "#")(
-                    "db-write-buffer-size",
-                    "Size of the database write buffer in megabytes (MB)",
-                    cxxopts::value<int>()->default_value(std::to_string(config.dbWriteBufferSizeMB)),
-                    "#")
-#endif
-                    ;
+
+            ("db-max-open-files",
+             "Number of files that can be used by the database at one time " + maxOpenFiles,
+             cxxopts::value<int>(),
+             "#")
+            ("db-read-buffer-size",
+             "Size of the database read cache in megabytes (MB) " + readCache,
+             cxxopts::value<int>(),
+             "#")
+            ("db-threads",
+             "Number of background threads used for compaction and flush operations (RocksDB only)",
+             cxxopts::value<int>()->default_value(std::to_string(CryptoNote::ROCKSDB_BACKGROUND_THREADS)),
+             "#")
+            ("db-write-buffer-size",
+             "Size of the database write buffer in megabytes (MB) " + writeBuffer,
+             cxxopts::value<int>(),
+             "#")
+            ("db-max-file-size",
+             "Max file size of database files in megabytes (MB) (LevelDB only)",
+             cxxopts::value<int>()->default_value(std::to_string(CryptoNote::LEVELDB_MAX_FILE_SIZE_MB)),
+             "#");
+
         options.add_options("Syncing")(
             "transaction-validation-threads",
             "Number of threads to use to validate a transaction's inputs in parallel",
@@ -270,6 +292,24 @@ namespace DaemonConfig
             if (cli.count("no-console") > 0)
             {
                 config.noConsole = cli["no-console"].as<bool>();
+            }
+
+            /* Using levelDB, lets set the level DB defaults. Will overwrite with
+             * passed in values later if present. */
+            if (cli.count("db-enable-level-db") > 0 && cli["db-enable-level-db"].as<bool>())
+            {
+                config.enableLevelDB = true;
+                config.dbMaxOpenFiles = CryptoNote::LEVELDB_MAX_OPEN_FILES;
+                config.dbReadCacheSizeMB = CryptoNote::LEVELDB_READ_BUFFER_MB;
+                config.dbWriteBufferSizeMB = CryptoNote::LEVELDB_WRITE_BUFFER_MB;
+                config.dbMaxFileSizeMB = CryptoNote::LEVELDB_MAX_FILE_SIZE_MB;
+            }
+            else
+            {
+                config.dbMaxOpenFiles = CryptoNote::ROCKSDB_MAX_OPEN_FILES;
+                config.dbReadCacheSizeMB = CryptoNote::ROCKSDB_READ_BUFFER_MB;
+                config.dbWriteBufferSizeMB = CryptoNote::ROCKSDB_WRITE_BUFFER_MB;
+                config.dbThreads = CryptoNote::ROCKSDB_BACKGROUND_THREADS;
             }
 
             if (cli.count("db-max-open-files") > 0)
@@ -473,7 +513,7 @@ namespace DaemonConfig
                         throw std::runtime_error(std::string(e.what()) + " - Invalid value for " + cfgKey);
                     }
                 }
-#if defined(ENABLE_ZSTD_COMPRESSION) && !defined(USE_LEVELDB)
+#if defined(ENABLE_ZSTD_COMPRESSION)
                 else if (cfgKey.compare("db-enable-compression") == 0)
                 {
                     config.enableDbCompression = cfgValue.at(0) == '1';
@@ -485,7 +525,6 @@ namespace DaemonConfig
                     config.noConsole = cfgValue.at(0) == '1';
                     updated = true;
                 }
-#if !defined(USE_LEVELDB)
                 else if (cfgKey.compare("db-max-open-files") == 0)
                 {
                     try
@@ -534,7 +573,6 @@ namespace DaemonConfig
                         throw std::runtime_error(std::string(e.what()) + " - Invalid value for " + cfgKey);
                     }
                 }
-#endif
                 else if (cfgKey.compare("allow-local-ip") == 0)
                 {
                     config.localIp = cfgValue.at(0) == '1';
@@ -732,7 +770,24 @@ namespace DaemonConfig
             config.logLevel = j["log-level"].GetInt();
         }
 
-#if defined(ENABLE_ZSTD_COMPRESSION) && !defined(USE_LEVELDB)
+        /* Using levelDB, lets set the level DB defaults. Will overwrite with
+         * passed in values later if present. */
+        if (j.HasMember("db-enable-level-db") && j["db-enable-level-db"].GetBool())
+        {
+            config.dbMaxOpenFiles = CryptoNote::LEVELDB_MAX_OPEN_FILES;
+            config.dbReadCacheSizeMB = CryptoNote::LEVELDB_READ_BUFFER_MB;
+            config.dbWriteBufferSizeMB = CryptoNote::LEVELDB_WRITE_BUFFER_MB;
+            config.dbMaxFileSizeMB = CryptoNote::LEVELDB_MAX_FILE_SIZE_MB;
+        }
+        else
+        {
+            config.dbMaxOpenFiles = CryptoNote::ROCKSDB_MAX_OPEN_FILES;
+            config.dbReadCacheSizeMB = CryptoNote::ROCKSDB_READ_BUFFER_MB;
+            config.dbWriteBufferSizeMB = CryptoNote::ROCKSDB_WRITE_BUFFER_MB;
+            config.dbThreads = CryptoNote::ROCKSDB_BACKGROUND_THREADS;
+        }
+
+#if defined(ENABLE_ZSTD_COMPRESSION)
         if (j.HasMember("db-enable-compression"))
         {
             config.enableDbCompression = j["db-enable-compression"].GetBool();
@@ -743,7 +798,7 @@ namespace DaemonConfig
         {
             config.noConsole = j["no-console"].GetBool();
         }
-#if !defined(USE_LEVELDB)
+
         if (j.HasMember("db-max-open-files"))
         {
             config.dbMaxOpenFiles = j["db-max-open-files"].GetInt();
@@ -764,7 +819,11 @@ namespace DaemonConfig
             config.dbWriteBufferSizeMB = j["db-write-buffer-size"].GetInt();
         }
 
-#endif
+        if (j.HasMember("db-max-file-size"))
+        {
+            config.dbMaxFileSizeMB = j["db-max-file-size"].GetInt();
+        }
+
         if (j.HasMember("allow-local-ip"))
         {
             config.localIp = j["allow-local-ip"].GetBool();
@@ -865,6 +924,11 @@ namespace DaemonConfig
         {
             config.feeAmount = j["fee-amount"].GetInt();
         }
+
+        if (j.HasMember("transaction-validation-threads"))
+        {
+            config.transactionValidationThreads = j["transaction-validation-threads"].GetInt();
+        }
     }
 
     Document asJSON(const DaemonConfiguration &config)
@@ -878,15 +942,15 @@ namespace DaemonConfig
         j.AddMember("log-file", config.logFile, alloc);
         j.AddMember("log-level", config.logLevel, alloc);
         j.AddMember("no-console", config.noConsole, alloc);
-#if defined(ENABLE_ZSTD_COMPRESSION) && !defined(USE_LEVELDB)
+        j.AddMember("db-enable-level-db", config.enableLevelDB, alloc);
+#if defined(ENABLE_ZSTD_COMPRESSION)
         j.AddMember("db-enable-compression", config.enableDbCompression, alloc);
 #endif
-#if !defined(USE_LEVELDB)
         j.AddMember("db-max-open-files", config.dbMaxOpenFiles, alloc);
-        j.AddMember("db-read-buffer-size", (config.dbReadCacheSizeMB), alloc);
+        j.AddMember("db-read-buffer-size", config.dbReadCacheSizeMB, alloc);
         j.AddMember("db-threads", config.dbThreads, alloc);
-        j.AddMember("db-write-buffer-size", (config.dbWriteBufferSizeMB), alloc);
-#endif
+        j.AddMember("db-write-buffer-size", config.dbWriteBufferSizeMB, alloc);
+        j.AddMember("db-max-file-size", config.dbMaxFileSizeMB, alloc);
         j.AddMember("allow-local-ip", config.localIp, alloc);
         j.AddMember("hide-my-port", config.hideMyPort, alloc);
         j.AddMember("p2p-bind-ip", config.p2pInterface, alloc);
@@ -937,6 +1001,7 @@ namespace DaemonConfig
         j.AddMember("enable-blockexplorer-detailed", config.enableBlockExplorerDetailed, alloc);
         j.AddMember("fee-address", config.feeAddress, alloc);
         j.AddMember("fee-amount", config.feeAmount, alloc);
+        j.AddMember("transaction-validation-threads", config.transactionValidationThreads, alloc);
 
         return j;
     }
