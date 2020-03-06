@@ -377,7 +377,7 @@ namespace CryptoNote
     const uint64_t LEVELDB_WRITE_BUFFER_MB = 64; // 64 MB
     const uint64_t LEVELDB_READ_BUFFER_MB = 64; // 64 MB
     const uint64_t LEVELDB_MAX_OPEN_FILES = 128; // 128 files
-    const uint64_t LEVELDB_MAX_FILE_SIZE_MB = 1024 * 1024; // 1GB
+    const uint64_t LEVELDB_MAX_FILE_SIZE_MB = 1024; // 1024MB = 1GB
 
     const char LATEST_VERSION_URL[] = "http://latest.turtlecoin.lol";
 
