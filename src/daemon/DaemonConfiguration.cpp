@@ -172,13 +172,9 @@ namespace DaemonConfig
             ("db-enable-level-db",
              "Use LevelDB instead of RocksDB",
              cxxopts::value<bool>()->default_value("false")->implicit_value("true"))
-
-#if defined(ENABLE_ZSTD_COMPRESSION)
             ("db-enable-compression",
              "Enable database compression",
              cxxopts::value<bool>()->default_value("false")->implicit_value("true"))
-#endif
-
             ("db-max-open-files",
              "Number of files that can be used by the database at one time " + maxOpenFiles,
              cxxopts::value<int>(),
@@ -282,12 +278,10 @@ namespace DaemonConfig
                 config.logLevel = cli["log-level"].as<int>();
             }
 
-#ifdef ENABLE_ZSTD_COMPRESSION
             if (cli.count("db-enable-compression") > 0)
             {
                 config.enableDbCompression = cli["db-enable-compression"].as<bool>();
             }
-#endif
 
             if (cli.count("no-console") > 0)
             {
@@ -513,13 +507,11 @@ namespace DaemonConfig
                         throw std::runtime_error(std::string(e.what()) + " - Invalid value for " + cfgKey);
                     }
                 }
-#if defined(ENABLE_ZSTD_COMPRESSION)
                 else if (cfgKey.compare("db-enable-compression") == 0)
                 {
                     config.enableDbCompression = cfgValue.at(0) == '1';
                     updated = true;
                 }
-#endif
                 else if (cfgKey.compare("no-console") == 0)
                 {
                     config.noConsole = cfgValue.at(0) == '1';
@@ -787,12 +779,10 @@ namespace DaemonConfig
             config.dbThreads = CryptoNote::ROCKSDB_BACKGROUND_THREADS;
         }
 
-#if defined(ENABLE_ZSTD_COMPRESSION)
         if (j.HasMember("db-enable-compression"))
         {
             config.enableDbCompression = j["db-enable-compression"].GetBool();
         }
-#endif
 
         if (j.HasMember("no-console"))
         {
@@ -943,9 +933,7 @@ namespace DaemonConfig
         j.AddMember("log-level", config.logLevel, alloc);
         j.AddMember("no-console", config.noConsole, alloc);
         j.AddMember("db-enable-level-db", config.enableLevelDB, alloc);
-#if defined(ENABLE_ZSTD_COMPRESSION)
         j.AddMember("db-enable-compression", config.enableDbCompression, alloc);
-#endif
         j.AddMember("db-max-open-files", config.dbMaxOpenFiles, alloc);
         j.AddMember("db-read-buffer-size", config.dbReadCacheSizeMB, alloc);
         j.AddMember("db-threads", config.dbThreads, alloc);
