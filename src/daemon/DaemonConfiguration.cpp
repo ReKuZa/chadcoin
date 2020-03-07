@@ -766,6 +766,7 @@ namespace DaemonConfig
          * passed in values later if present. */
         if (j.HasMember("db-enable-level-db") && j["db-enable-level-db"].GetBool())
         {
+            config.enableLevelDB = true;
             config.dbMaxOpenFiles = CryptoNote::LEVELDB_MAX_OPEN_FILES;
             config.dbReadCacheSizeMB = CryptoNote::LEVELDB_READ_BUFFER_MB;
             config.dbWriteBufferSizeMB = CryptoNote::LEVELDB_WRITE_BUFFER_MB;

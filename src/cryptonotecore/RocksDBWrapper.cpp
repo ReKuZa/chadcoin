@@ -272,10 +272,9 @@ rocksdb::Options RocksDBWrapper::getDBOptions(const DataBaseConfig &config)
         // don't compress l0 & l1
         fOptions.compression_per_level[i] = (i < 2 ? rocksdb::kNoCompression : compressionLevel);
     }
+
     // bottom most use kZSTD
-    fOptions.bottommost_compression = config.compressionEnabled
-        ? rocksdb::kZSTD
-        : rocksdb::kNoCompression;
+    fOptions.bottommost_compression = compressionLevel;
 
     rocksdb::BlockBasedTableOptions tableOptions;
     tableOptions.block_cache = rocksdb::NewLRUCache(config.readCacheSize);
