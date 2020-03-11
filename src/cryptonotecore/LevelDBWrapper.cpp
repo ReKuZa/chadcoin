@@ -34,14 +34,49 @@ void LevelDBWrapper::init(const DataBaseConfig &config)
 
     leveldb::Options dbOptions;
 
+    // From the LevelDB docs:
+    //
+    // Compress blocks using the specified compression algorithm.  This
+    // parameter can be changed dynamically.
+    //
+    // Default: kSnappyCompression, which gives lightweight but fast
+    // compression.
+    //
+    // Typical speeds of kSnappyCompression on an Intel(R) Core(TM)2 2.4GHz:
+    //    ~200-500MB/s compression
+    //    ~400-800MB/s decompression
+    // Note that these speeds are significantly faster than most
+    // persistent storage speeds, and therefore it is typically never
+    // worth switching to kNoCompression.  Even if the input data is
+    // incompressible, the kSnappyCompression implementation will
+    // efficiently detect that and will switch to uncompressed mode.
     dbOptions.compression = config.compressionEnabled
         ? leveldb::kSnappyCompression
         : leveldb::kNoCompression;
 
+    // Leveldb will write up to this amount of bytes to a file before
+    // switching to a new one.
+    // Most clients should leave this parameter alone.  However if your
+    // filesystem is more efficient with larger files, you could
+    // consider increasing the value.  The downside will be longer
+    // compactions and hence longer latency/performance hiccups.
+    // Another reason to increase this parameter might be when you are
+    // initially populating a large database.
     dbOptions.max_file_size = config.maxFileSize;
 
+    // Amount of data to build up in memory (backed by an unsorted log
+    // on disk) before converting to a sorted on-disk file.
+    //
+    // Larger values increase performance, especially during bulk loads.
+    // Up to two write buffers may be held in memory at the same time,
+    // so you may wish to adjust this parameter to control memory usage.
+    // Also, a larger write buffer will result in a longer recovery time
+    // the next time the database is opened.
     dbOptions.write_buffer_size =  static_cast<size_t>(config.writeBufferSize);
 
+    // Number of open files that can be used by the DB.  You may need to
+    // increase this if your database has a large working set (budget
+    // one open file per 2MB of working set).
     dbOptions.max_open_files = config.maxOpenFiles;
 
     dbOptions.block_cache = leveldb::NewLRUCache(config.readCacheSize);
