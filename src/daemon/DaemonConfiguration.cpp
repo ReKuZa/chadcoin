@@ -326,6 +326,11 @@ namespace DaemonConfig
                 config.dbWriteBufferSizeMB = cli["db-write-buffer-size"].as<int>();
             }
 
+            if (cli.count("db-max-file-size") > 0)
+            {
+                config.dbMaxFileSizeMB = cli["db-max-file-size"].as<int>();
+            }
+
             if (cli.count("local-ip") > 0)
             {
                 config.localIp = cli["local-ip"].as<bool>();
