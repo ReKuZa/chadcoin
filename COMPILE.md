@@ -96,7 +96,7 @@ _CentOS compile instructions provided by @brandonlehmann_
 
 -   `sudo yum update -y`
 -   `sudo yum install -y epel-release centos-release-scl`
--   `sudo yum install -y devtoolset-8 cmake3 wget git openssl-devel`
+-   `sudo yum install -y devtoolset-8 cmake cmake3 wget git openssl-devel`
 -   `sudo scl enable devtoolset-8 bash`
 -   `wget https://dl.bintray.com/boostorg/release/1.68.0/source/boost_1_68_0.tar.gz`
 -   `tar xzvf boost_1_68_0.tar.gz && cd boost_1_68_0`
