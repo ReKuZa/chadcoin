@@ -14,7 +14,7 @@ jobs:
   # Common Build matrix for builds on Ubuntu VM
   ubuntu_build:
     name: ${{ matrix.build_name }}
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
@@ -45,7 +45,7 @@ jobs:
       CCACHE_DIR: $GITHUB_WORKSPACE/.ccache
       LABEL: ${{ matrix.label }}
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
 
       # Fetch Dependencies
       - name: Dependencies
@@ -122,7 +122,7 @@ jobs:
       # Upload to GH Release
       - name: Upload to GH Release
         if: github.event_name == 'release' && matrix.deployable
-        uses: actions/upload-release-asset@v1.0.1
+        uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -133,7 +133,7 @@ jobs:
 
       # Upload to GH Actions Artifacts
       - name: Upload To GH Artifacts
-        uses: actions/upload-artifact@v1.0.0
+        uses: actions/upload-artifact@v2
         with:
           name: ${{ steps.before_deploy.outputs.artifact_name }}
           path: ./build/src/${{ steps.before_deploy.outputs.binary_path }}
@@ -148,7 +148,7 @@ jobs:
       LABEL: osx
       CCACHE_DIR: $GITHUB_WORKSPACE/.ccache
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
 
       # Fetch Dependencies
       - name: Dependencies
@@ -206,7 +206,7 @@ jobs:
       # Upload to GH Release
       - name: Upload to GH Release
         if: github.event_name == 'release'
-        uses: actions/upload-release-asset@v1.0.1
+        uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -217,7 +217,7 @@ jobs:
 
       # Upload to GH Actions Artifacts
       - name: Upload To GH Artifacts
-        uses: actions/upload-artifact@v1.0.0
+        uses: actions/upload-artifact@v2
         with:
           name: ${{ steps.before_deploy.outputs.artifact_name }}
           path: ./build/src/${{ steps.before_deploy.outputs.binary_path }}
@@ -225,12 +225,12 @@ jobs:
   # Windows Builds on Windows Server 2019
   windows_build:
     name: Windows
-    runs-on: windows-2019
+    runs-on: windows-latest
     env:
       MSBUILD_PATH: "C:/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/MSBuild/Current/Bin"
       LABEL: windows
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
 
       - name: Setup clcache
         run: pip install clcache
@@ -240,9 +240,6 @@ jobs:
         with:
           path: clcache
           key: clcache-windows
-
-      - name: Install OpenSSL
-        run: choco install openssl
 
       # Configure project with cmake
       - name: Configure
@@ -257,7 +254,7 @@ jobs:
           $env:CLCACHE_DIR = "$env:GITHUB_WORKSPACE\clcache"
           $env:PATH = "$env:PATH;$env:MSBUILD_PATH"
           cd build
-          MSBuild TurtleCoin.sln /p:CLToolExe=clcache.exe /p:CLToolPath=c:\hostedtoolcache\windows\Python\3.7.6\x64\Scripts\ /p:Configuration=Release /p:PlatformToolset=v141 /m
+          MSBuild TurtleCoin.sln /p:CLToolExe=clcache.exe /p:Configuration=Release /p:PlatformToolset=v141 /m
 
       # Test the crypto
       - name: Test Crypto
@@ -288,7 +285,7 @@ jobs:
       # Upload to GH Release
       - name: Upload to GH Release
         if: github.event_name == 'release'
-        uses: actions/upload-release-asset@v1.0.1
+        uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
@@ -299,7 +296,7 @@ jobs:
 
       # Upload to GH Actions Artifacts
       - name: Upload To GH Artifacts
-        uses: actions/upload-artifact@v1.0.0
+        uses: actions/upload-artifact@v2
         with:
           name: ${{ steps.before_deploy.outputs.artifact_name }}
           path: ./build/src/Release/${{ steps.before_deploy.outputs.binary_path }}
