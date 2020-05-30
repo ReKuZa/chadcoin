@@ -2,6 +2,7 @@
 add_definitions(-DSTATICLIB)
 
 # Add external libraries as include dirs, so we can do #include "httplib" for example
+include_directories(${CMAKE_SOURCE_DIR}/external/leveldb/include)
 include_directories(${CMAKE_SOURCE_DIR}/external/rocksdb/include)
 include_directories(${CMAKE_SOURCE_DIR}/external/cpp-linenoise)
 include_directories(${CMAKE_SOURCE_DIR}/external/cpp-httplib)
@@ -12,6 +13,7 @@ include_directories(${CMAKE_SOURCE_DIR}/external/cryptopp)
 include_directories(${CMAKE_SOURCE_DIR}/external/zstd)
 include_directories(${CMAKE_SOURCE_DIR}/external/lz4)
 include_directories(${CMAKE_SOURCE_DIR}/external/argon2/include)
+include_directories(${CMAKE_SOURCE_DIR}/external/snappy)
 
 # Show cmake where the source files are
 # Note, if you add remove a source file, you will need to re-run cmake so it
@@ -133,9 +135,9 @@ elseif (UNIX)
 endif ()
 
 if (MSVC)
-    target_link_libraries(TurtleCoind System CryptoNoteCore rocksdb zstd lz4 Errors ${Boost_LIBRARIES})
+    target_link_libraries(TurtleCoind System CryptoNoteCore rocksdb zstd lz4 leveldb snappy Errors ${Boost_LIBRARIES})
 else ()
-    target_link_libraries(TurtleCoind System CryptoNoteCore rocksdblib zstd lz4 Errors ${Boost_LIBRARIES})
+    target_link_libraries(TurtleCoind System CryptoNoteCore rocksdblib zstd lz4 leveldblib snappy Errors ${Boost_LIBRARIES})
 endif ()
 
 # Add the dependencies we need

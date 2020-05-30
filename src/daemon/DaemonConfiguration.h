@@ -28,10 +28,6 @@ namespace DaemonConfig
             checkPoints = "default";
             logFile = logfile.str();
             logLevel = Logging::WARNING;
-            dbMaxOpenFiles = CryptoNote::DATABASE_DEFAULT_MAX_OPEN_FILES;
-            dbReadCacheSizeMB = CryptoNote::DATABASE_READ_BUFFER_MB_DEFAULT_SIZE;
-            dbThreads = CryptoNote::DATABASE_DEFAULT_BACKGROUND_THREADS_COUNT;
-            dbWriteBufferSizeMB = CryptoNote::DATABASE_WRITE_BUFFER_MB_DEFAULT_SIZE;
             rewindToHeight = 0;
             p2pInterface = "0.0.0.0";
             p2pPort = CryptoNote::P2P_DEFAULT_PORT;
@@ -52,6 +48,7 @@ namespace DaemonConfig
             dumpConfig = false;
             enableDbCompression = false;
             resync = false;
+            enableLevelDB = false;
         }
 
         std::string dataDirectory;
@@ -88,13 +85,15 @@ namespace DaemonConfig
 
         uint32_t transactionValidationThreads;
 
-        int dbThreads;
+        uint64_t dbThreads;
 
-        int dbMaxOpenFiles;
+        uint64_t dbMaxOpenFiles;
 
-        int dbWriteBufferSizeMB;
+        uint64_t dbWriteBufferSizeMB;
 
-        int dbReadCacheSizeMB;
+        uint64_t dbReadCacheSizeMB;
+
+        uint64_t dbMaxFileSizeMB;
 
         uint32_t rewindToHeight;
 
@@ -111,6 +110,8 @@ namespace DaemonConfig
         bool resync;
 
         bool p2pResetPeerstate;
+
+        bool enableLevelDB;
 
         std::string configFile;
 

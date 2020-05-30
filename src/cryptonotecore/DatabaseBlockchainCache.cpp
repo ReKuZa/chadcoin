@@ -284,6 +284,7 @@ namespace CryptoNote
         {
             auto batch = BlockchainReadBatch().requestTransactionCountByPaymentId(paymentId);
             auto error = database.read(batch);
+
             if (error)
             {
                 throw std::system_error(error, "Error while reading transactions count by payment id");
@@ -1189,6 +1190,7 @@ namespace CryptoNote
     {
         auto batch = BlockchainReadBatch().requestBlockIndexBySpentKeyImage(keyImage);
         auto res = database.readThreadSafe(batch);
+
         if (res)
         {
             logger(Logging::ERROR) << "checkIfSpent failed, request to database failed: " << res.message();
