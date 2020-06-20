@@ -124,7 +124,7 @@ namespace CryptoNote
 
         const uint32_t MIXIN_LIMITS_V3_HEIGHT = 800000;
 
-        /* The mixin to use by default with zedwallet and turtle-service */
+        /* The mixin to use by default with wallet software */
         /* DEFAULT_MIXIN_V0 is the mixin used before MIXIN_LIMITS_V1_HEIGHT is started */
         const uint64_t DEFAULT_MIXIN_V0 = 3;
 
@@ -272,10 +272,20 @@ namespace CryptoNote
             2600000, // 15
             2800000, // 16
             3000000, // 17
+            3200000, // 18
+            3400000, // 19
+            3600000, // 20
+            3800000, // 21
+            4000000, // 22
+            4200000, // 23
+            4400000, // 24
+            4600000, // 25
+            4800000, // 26
+            5000000, // 27
         };
 
         /* MAKE SURE TO UPDATE THIS VALUE WITH EVERY MAJOR RELEASE BEFORE A FORK */
-        const uint64_t SOFTWARE_SUPPORTED_FORK_INDEX = 16;
+        const uint64_t SOFTWARE_SUPPORTED_FORK_INDEX = 17;
 
         const uint64_t FORK_HEIGHTS_SIZE = sizeof(FORK_HEIGHTS) / sizeof(*FORK_HEIGHTS);
 
