@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2019, The TurtleCoin Developers
+// Copyright (c) 2018-2020, The TurtleCoin Developers
 //
 // Please see the included LICENSE file for more information.
 
@@ -1002,6 +1002,45 @@ std::tuple<Error, uint16_t> ApiDispatcher::makeAdvancedTransaction(
         }
     }
 
+    std::vector<uint8_t> karaiPtr;
+
+    std::vector<uint8_t> karaiHash;
+
+    if (hasMember(body, "karai"))
+    {
+        const auto karai = getObjectFromJSON(body, "karai");
+
+        if (hasMember(karai, "pointer"))
+        {
+            std::string pointer = getStringFromJSON(karai, "pointer");
+
+            if (!Common::fromHex(pointer, karaiPtr))
+            {
+                return {Error(API_INVALID_ARGUMENT, "Invalid Karai Pointer Record Supplied"), 400};
+            }
+
+            if (karaiPtr.size() != 11)
+            {
+                return {Error(API_INVALID_ARGUMENT, "Invalid Karai pointer Record Supplied"), 400};
+            }
+        }
+
+        if (hasMember(karai, "hash"))
+        {
+            std::string hash = getStringFromJSON(karai, "hash");
+
+            if (!Common::fromHex(hash, karaiHash))
+            {
+                return {Error(API_INVALID_ARGUMENT, "Invalid Karai Hash Record Supplied"), 400};
+            }
+
+            if (karaiHash.size() != 32)
+            {
+                return {Error(API_INVALID_ARGUMENT, "Invalid Karai Hash Record Supplied"), 400};
+            }
+        }
+    }
+
     auto [error, hash, preparedTransaction] = m_walletBackend->sendTransactionAdvanced(
         destinations,
         mixin,
@@ -1012,7 +1051,9 @@ std::tuple<Error, uint16_t> ApiDispatcher::makeAdvancedTransaction(
         unlockTime,
         extraData,
         false, /* Don't send all */
-        sendTransaction
+        sendTransaction,
+        karaiPtr,
+        karaiHash
     );
 
     if (error)
@@ -1117,6 +1158,45 @@ std::tuple<Error, uint16_t>
         }
     }
 
+    std::vector<uint8_t> karaiPtr;
+
+    std::vector<uint8_t> karaiHash;
+
+    if (hasMember(body, "karai"))
+    {
+        const auto karai = getObjectFromJSON(body, "karai");
+
+        if (hasMember(karai, "pointer"))
+        {
+            std::string pointer = getStringFromJSON(karai, "pointer");
+
+            if (!Common::fromHex(pointer, karaiPtr))
+            {
+                return {Error(API_INVALID_ARGUMENT,"Invalid Karai Pointer Record Supplied"), 400};
+            }
+
+            if (karaiPtr.size() != 11)
+            {
+                return {Error(API_INVALID_ARGUMENT, "Invalid Karai pointer Record Supplied"), 400};
+            }
+        }
+
+        if (hasMember(karai, "hash"))
+        {
+            std::string hash = getStringFromJSON(karai, "hash");
+
+            if (!Common::fromHex(hash, karaiHash))
+            {
+                return {Error(API_INVALID_ARGUMENT, "Invalid Karai Hash Record Supplied"), 400};
+            }
+
+            if (karaiHash.size() != 32)
+            {
+                return {Error(API_INVALID_ARGUMENT, "Invalid Karai Hash Record Supplied"), 400};
+            }
+        }
+    }
+
     std::optional<uint64_t> optimizeTarget;
 
     if (hasMember(body, "optimizeTarget"))
@@ -1129,7 +1209,9 @@ std::tuple<Error, uint16_t>
         subWalletsToTakeFrom,
         destination,
         extraData,
-        optimizeTarget
+        optimizeTarget,
+        karaiPtr,
+        karaiHash
     );
 
     if (error)

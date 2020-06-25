@@ -1,4 +1,4 @@
-// Copyright (c) 2019, The TurtleCoin Developers
+// Copyright (c) 2019-2020, The TurtleCoin Developers
 //
 // Please see the included LICENSE file for more information.
 
@@ -14,25 +14,43 @@ namespace Utilities
     std::string getPaymentIDFromExtra(const std::vector<uint8_t> &extra)
     {
         const ParsedExtra parsed = parseExtra(extra);
+
         return parsed.paymentID;
     }
 
     Crypto::PublicKey getTransactionPublicKeyFromExtra(const std::vector<uint8_t> &extra)
     {
         const ParsedExtra parsed = parseExtra(extra);
+
         return parsed.transactionPublicKey;
     }
 
     MergedMiningTag getMergedMiningTagFromExtra(const std::vector<uint8_t> &extra)
     {
         const ParsedExtra parsed = parseExtra(extra);
+
         return parsed.mergedMiningTag;
     }
 
     std::vector<uint8_t> getExtraDataFromExtra(const std::vector<uint8_t> &extra)
     {
         const ParsedExtra parsed = parseExtra(extra);
+
         return parsed.extraData;
+    }
+
+    std::vector<uint8_t> getKaraiPtr(const std::vector<uint8_t> &extra)
+    {
+        const ParsedExtra parsed = parseExtra(extra);
+
+        return parsed.karaiPtr;
+    }
+
+    std::vector<uint8_t> getKaraiHash(const std::vector<uint8_t> &extra)
+    {
+        const ParsedExtra parsed = parseExtra(extra);
+
+        return parsed.karaiHash;
     }
 
     ParsedExtra parseExtra(const std::vector<uint8_t> &extra)
@@ -40,24 +58,37 @@ namespace Utilities
         ParsedExtra parsed {Constants::NULL_PUBLIC_KEY, std::string(), {0, Constants::NULL_HASH}};
 
         bool seenPubKey = false;
+
         bool seenNonce = false;
+
         bool seenExtraData = false;
+
         bool seenPaymentID = false;
+
         bool seenMergedMiningTag = false;
+
         bool seenRecipientPublicViewKey = false;
+
         bool seenRecipientPublicSpendKey = false;
+
         bool seenTransactionPrivateKey = false;
+
+        bool seenKaraiPtr = false;
+
+        bool seenKaraiHash = false;
 
         for (auto it = extra.begin(); it < extra.end(); it++)
         {
             /* Nothing else to parse. */
             if (seenPubKey
-             && seenPaymentID
-             && seenMergedMiningTag
-             && seenExtraData
-             && seenRecipientPublicViewKey
-             && seenRecipientPublicSpendKey
-             && seenTransactionPrivateKey)
+                && seenPaymentID
+                && seenMergedMiningTag
+                && seenExtraData
+                && seenRecipientPublicViewKey
+                && seenRecipientPublicSpendKey
+                && seenTransactionPrivateKey
+                && seenKaraiPtr
+                && seenKaraiHash)
             {
                 break;
             }
@@ -248,6 +279,34 @@ namespace Utilities
                 it += 32;
 
                 seenTransactionPrivateKey = true;
+
+                /* And continue parsing. */
+                continue;
+            }
+
+            if (c == Constants::TX_EXTRA_KARAI_PTR && elementsRemaining > 11 && !seenKaraiPtr)
+            {
+                /* Copy 11 chars, beginning from the next char */
+                std::copy(it + 1, it + 1 + 11, std::back_inserter(parsed.karaiPtr));
+
+                /* Advance past the pointer */
+                it += 11;
+
+                /* And continue parsing. */
+                seenKaraiPtr = true;
+
+                continue;
+            }
+
+            if (c == Constants::TX_EXTRA_KARAI_HASH && elementsRemaining > 32 && !seenKaraiHash)
+            {
+                /* Copy 32 chars, beginning from the next char */
+                std::copy(it + 1, it + 1 + 32, std::back_inserter(parsed.karaiHash));
+
+                /* Advance past the private key */
+                it += 32;
+
+                seenKaraiHash = true;
 
                 /* And continue parsing. */
                 continue;

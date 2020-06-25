@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2019, The TurtleCoin Developers
+// Copyright (c) 2018-2020, The TurtleCoin Developers
 //
 // Please see the included LICENSE file for more information.
 
@@ -155,7 +155,9 @@ class WalletBackend
         const uint64_t unlockTime,
         const std::vector<uint8_t> extraData,
         const bool sendAll = false,
-        const bool sendTransaction = true);
+        const bool sendTransaction = true,
+        const std::vector<uint8_t> karaiPtr = {},
+        const std::vector<uint8_t> karaiHash = {});
 
     /* Send a fusion using default mixin, default destination, and
        taking from all subwallets */
@@ -167,7 +169,9 @@ class WalletBackend
         const std::vector<std::string> subWalletsToTakeFrom,
         const std::string destinationAddress,
         const std::vector<uint8_t> extraData,
-        const std::optional<uint64_t> optimizeTarget);
+        const std::optional<uint64_t> optimizeTarget,
+        const std::vector<uint8_t> karaiPtr = {},
+        const std::vector<uint8_t> karaiHash = {});
 
     /* Get the balance for one subwallet (error, unlocked, locked) */
     std::tuple<Error, uint64_t, uint64_t> getBalance(const std::string address) const;

@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2019, The TurtleCoin Developers
+// Copyright (c) 2018-2020, The TurtleCoin Developers
 //
 // Please see the included LICENSE file for more information.
 
@@ -50,7 +50,9 @@ namespace Utilities
         const size_t numInputs,
         const size_t numOutputs,
         const bool havePaymentID,
-        const size_t extraDataSize);
+        const size_t extraDataSize,
+        const size_t karaiPtrSize,
+        const size_t karaiHashSize);
 
     size_t getApproximateMaximumInputCount(
         const size_t transactionSize,

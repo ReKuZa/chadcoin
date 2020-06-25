@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2019, The TurtleCoin Developers
+// Copyright (c) 2018-2020, The TurtleCoin Developers
 //
 // Please see the included LICENSE file for more information.
 
@@ -766,7 +766,9 @@ std::tuple<Error, Crypto::Hash, WalletTypes::PreparedTransactionInfo> WalletBack
     const uint64_t unlockTime,
     const std::vector<uint8_t> extraData,
     const bool sendAll,
-    const bool sendTransaction)
+    const bool sendTransaction,
+    const std::vector<uint8_t> karaiPtr,
+    const std::vector<uint8_t> karaiHash)
 {
     std::scoped_lock lock(m_transactionMutex);
 
@@ -782,7 +784,9 @@ std::tuple<Error, Crypto::Hash, WalletTypes::PreparedTransactionInfo> WalletBack
         unlockTime,
         extraData,
         sendAll,
-        sendTransaction
+        sendTransaction,
+        karaiPtr,
+        karaiHash
     );
 
     if (!sendTransaction && !error)
@@ -805,7 +809,9 @@ std::tuple<Error, Crypto::Hash> WalletBackend::sendFusionTransactionAdvanced(
     const std::vector<std::string> subWalletsToTakeFrom,
     const std::string destination,
     const std::vector<uint8_t> extraData,
-    const std::optional<uint64_t> optimizeTarget)
+    const std::optional<uint64_t> optimizeTarget,
+    const std::vector<uint8_t> karaiPtr,
+    const std::vector<uint8_t> karaiHash)
 {
     std::scoped_lock lock(m_transactionMutex);
 
@@ -816,7 +822,9 @@ std::tuple<Error, Crypto::Hash> WalletBackend::sendFusionTransactionAdvanced(
         m_daemon,
         m_subWallets,
         extraData,
-        optimizeTarget
+        optimizeTarget,
+        karaiPtr,
+        karaiHash
     );
 }
 

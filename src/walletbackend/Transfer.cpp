@@ -28,7 +28,7 @@ namespace SendTransaction
            as the static constructors were used */
         const std::string defaultAddress = subWallets->getPrimaryAddress();
 
-        return sendFusionTransactionAdvanced(defaultMixin, {}, defaultAddress, daemon, subWallets, {}, std::nullopt);
+        return sendFusionTransactionAdvanced(defaultMixin, {}, defaultAddress, daemon, subWallets, {}, std::nullopt, {}, {});
     }
 
     std::tuple<Error, Crypto::Hash> sendFusionTransactionAdvanced(
@@ -38,7 +38,9 @@ namespace SendTransaction
         const std::shared_ptr<Nigel> daemon,
         const std::shared_ptr<SubWallets> subWallets,
         const std::vector<uint8_t> extraData,
-        const std::optional<uint64_t> optimizeTarget)
+        const std::optional<uint64_t> optimizeTarget,
+        const std::vector<uint8_t> karaiPtr,
+        const std::vector<uint8_t> karaiHash)
     {
         if (destination == "")
         {
@@ -162,7 +164,7 @@ namespace SendTransaction
             const uint64_t unlockTime = 0;
 
             WalletTypes::TransactionResult txResult =
-                makeTransaction(mixin, daemon, ourInputs, paymentID, destinations, subWallets, unlockTime, extraData);
+                makeTransaction(mixin, daemon, ourInputs, paymentID, destinations, subWallets, unlockTime, extraData, karaiPtr, karaiHash);
 
             tx = txResult.transaction;
             transactionOutputs = txResult.outputs;
@@ -272,7 +274,9 @@ namespace SendTransaction
             unlockTime,
             {},
             sendAll,
-            sendTransaction
+            sendTransaction,
+            {},
+            {}
         );
     }
 
@@ -288,7 +292,9 @@ namespace SendTransaction
         const uint64_t unlockTime,
         const std::vector<uint8_t> extraData,
         const bool sendAll,
-        const bool sendTransaction)
+        const bool sendTransaction,
+        const std::vector<uint8_t> karaiPtr,
+        const std::vector<uint8_t> karaiHash)
     {
         /* Append the fee transaction, if a fee is being used */
         const auto [feeAmount, feeAddress] = daemon->nodeFee();
@@ -390,7 +396,9 @@ namespace SendTransaction
                         ourInputs.size(),
                         destinations.size(),
                         paymentID != "",
-                        extraData.size()
+                        extraData.size(),
+                        karaiPtr.size(),
+                        karaiHash.size()
                     );
 
                     const double feePerByte = fee.isFeePerByte
@@ -438,7 +446,9 @@ namespace SendTransaction
                             subWallets,
                             unlockTime,
                             extraData,
-                            sendAll
+                            sendAll,
+                            karaiPtr,
+                            karaiHash
                         );
 
                         if (success)
@@ -470,7 +480,9 @@ namespace SendTransaction
                         destinations,
                         subWallets,
                         unlockTime,
-                        extraData
+                        extraData,
+                        karaiPtr,
+                        karaiHash
                     );
 
                     const uint64_t minFee = Utilities::getMinimumTransactionFee(
@@ -625,7 +637,9 @@ namespace SendTransaction
         const std::shared_ptr<SubWallets> subWallets,
         const uint64_t unlockTime,
         const std::vector<uint8_t> extraData,
-        const bool sendAll)
+        const bool sendAll,
+        const std::vector<uint8_t> karaiPtr,
+        const std::vector<uint8_t> karaiHash)
     {
         while (true)
         {
@@ -642,7 +656,9 @@ namespace SendTransaction
                 destinations,
                 subWallets,
                 unlockTime,
-                extraData
+                extraData,
+                karaiPtr,
+                karaiHash
             );
 
             const size_t actualTxSize = toBinaryArray(txResult.transaction).size();
@@ -1331,7 +1347,9 @@ namespace SendTransaction
         const std::vector<WalletTypes::TransactionDestination> destinations,
         const std::shared_ptr<SubWallets> subWallets,
         const uint64_t unlockTime,
-        const std::vector<uint8_t> extraData)
+        const std::vector<uint8_t> extraData,
+        const std::vector<uint8_t> karaiPtr,
+        const std::vector<uint8_t> karaiHash)
     {
         /* Mix our inputs with fake ones from the network to hide who we are */
         const auto [mixinError, inputsAndFakes] = prepareRingParticipants(ourInputs, mixin, daemon);
@@ -1402,6 +1420,24 @@ namespace SendTransaction
 
             /* Write the data to extra */
             std::copy(extraNonce.begin(), extraNonce.end(), std::back_inserter(extra));
+        }
+
+        if (!karaiPtr.empty())
+        {
+            /* Indicates this is a karai pointer */
+            extra.push_back(Constants::TX_EXTRA_KARAI_PTR);
+
+            /* Write the data to extra */
+            std::copy(karaiPtr.begin(), karaiPtr.end(), std::back_inserter(extra));
+        }
+
+        if (!karaiHash.empty())
+        {
+            /* Indicates this is a karai pointer */
+            extra.push_back(Constants::TX_EXTRA_KARAI_HASH);
+
+            /* Write the data to extra */
+            std::copy(karaiHash.begin(), karaiHash.end(), std::back_inserter(extra));
         }
 
         /* Add the pub key identifier to extra */

@@ -1,4 +1,4 @@
-// Copyright (c) 2019, The TurtleCoin Developers
+// Copyright (c) 2019-2020, The TurtleCoin Developers
 //
 // Please see the included LICENSE file for more information.
 
@@ -205,6 +205,12 @@ namespace Constants
 
     /* Indicates the following data is a transaction private key key */
     const uint8_t TX_EXTRA_TRANSACTION_PRIVATE_KEY_IDENTIFIER = 0x06;
+
+    /* Indicates that the following data is a Karai PTR record */
+    const uint8_t TX_EXTRA_KARAI_PTR = 0x40;
+
+    /* Indicates that the following data is a Karai Hash */
+    const uint8_t TX_EXTRA_KARAI_HASH = 0x41;
 
     /* Indicates the following data is arbitrary data in tx_extra */
     const uint8_t TX_EXTRA_ARBITRARY_DATA_IDENTIFIER = 0x7f;

@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2019, The TurtleCoin Developers
+// Copyright (c) 2018-2020, The TurtleCoin Developers
 //
 // Please see the included LICENSE file for more information.
 
@@ -247,7 +247,9 @@ namespace Utilities
         const size_t numInputs,
         const size_t numOutputs,
         const bool havePaymentID,
-        const size_t extraDataSize)
+        const size_t extraDataSize,
+        const size_t karaiPtrSize,
+        const size_t karaiHashSize)
     {
         const size_t KEY_IMAGE_SIZE = sizeof(Crypto::KeyImage);
         const size_t OUTPUT_KEY_SIZE = sizeof(decltype(CryptoNote::KeyOutput::key));
@@ -264,6 +266,8 @@ namespace Utilities
         const size_t TRANSACTION_UNLOCK_TIME_SIZE = sizeof(uint64_t) + 2; // varint
         const size_t EXTRA_DATA_SIZE = extraDataSize > 0 ? extraDataSize + 4 : 0;
         const size_t PAYMENT_ID_SIZE = havePaymentID ? 34 : 0;
+        const size_t KARAI_PTR_SIZE = karaiPtrSize > 0 ? karaiPtrSize + EXTRA_TAG_SIZE : 0;
+        const size_t KARAI_HASH_SIZE = karaiHashSize > 0 ? karaiHashSize + EXTRA_TAG_SIZE : 0;
 
         /* The size of the transaction header */
         const size_t headerSize = TRANSACTION_VERSION_SIZE
@@ -271,7 +275,9 @@ namespace Utilities
                                 + EXTRA_TAG_SIZE
                                 + EXTRA_DATA_SIZE
                                 + PUBLIC_KEY_SIZE
-                                + PAYMENT_ID_SIZE;
+                                + PAYMENT_ID_SIZE
+                                + KARAI_PTR_SIZE
+                                + KARAI_HASH_SIZE;
         
         /* The size of each transaction input */
         const size_t inputSize = INPUT_TAG_SIZE
