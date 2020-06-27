@@ -205,15 +205,10 @@ namespace CryptoNote
 
     bool addExtraNonceToTransactionExtra(std::vector<uint8_t> &tx_extra, const BinaryArray &extra_nonce)
     {
-        if (extra_nonce.size() > TX_EXTRA_NONCE_MAX_COUNT)
-        {
-            return false;
-        }
-
         size_t start_pos = tx_extra.size();
         tx_extra.resize(tx_extra.size() + 2 + extra_nonce.size());
         // write tag
-        tx_extra[start_pos] = TX_EXTRA_NONCE;
+        tx_extra[start_pos] = TX_EXTRA_POOL;
         // write len
         ++start_pos;
         tx_extra[start_pos] = static_cast<uint8_t>(extra_nonce.size());

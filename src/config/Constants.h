@@ -206,6 +206,9 @@ namespace Constants
     /* Indicates the following data is a transaction private key key */
     const uint8_t TX_EXTRA_TRANSACTION_PRIVATE_KEY_IDENTIFIER = 0x06;
 
+    /* Indicates a pool added nonce for pooled mining */
+    const uint8_t TX_EXTRA_POOL_NONCE = 0x07;
+
     /* Indicates the following data is arbitrary data in tx_extra */
     const uint8_t TX_EXTRA_ARBITRARY_DATA_IDENTIFIER = 0x7f;
 
