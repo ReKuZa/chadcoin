@@ -1244,6 +1244,9 @@ void RpcServer::generateBlockHeader(
         writer.Key("orphan");
         writer.Bool(extraDetails.isAlternative);
 
+        writer.Key("penalty");
+        writer.Uint64(extraDetails.penalty);
+
         writer.Key("prevHash");
         block.previousBlockHash.toJSON(writer);
 
