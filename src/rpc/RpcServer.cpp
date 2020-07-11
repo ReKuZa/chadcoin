@@ -932,7 +932,8 @@ std::tuple<Error, uint16_t>
 
         endHeight = std::stoull(endHeightStr);
 
-        if (startHeight >= endHeight)
+        // We allow startHeight and endHeight to be the same
+        if (startHeight > endHeight)
         {
             return {Error(API_INVALID_ARGUMENT, "Start height cannot be greater than end height."), 400};
         }
@@ -948,7 +949,8 @@ std::tuple<Error, uint16_t>
 
     std::unordered_map<Crypto::Hash, std::vector<uint64_t>> indexes;
 
-    const bool success = m_core->getGlobalIndexesForRange(startHeight, endHeight, indexes);
+    // This is now inclusive
+    const bool success = m_core->getGlobalIndexesForRange(startHeight, endHeight + 1, indexes);
 
     if (!success)
     {
@@ -1913,7 +1915,8 @@ std::tuple<Error, uint16_t>
 
         const uint64_t startTimestamp = hasMember(body, "timestamp") ? getUint64FromJSON(body, "timestamp") : 0;
 
-        const uint64_t blockCount = hasMember(body, "count") ? getUint64FromJSON(body, "count") : 100;
+        const uint64_t blockCount = hasMember(body, "count") ? getUint64FromJSON(body, "count") :
+                                                             CryptoNote::BLOCKS_SYNCHRONIZING_DEFAULT_COUNT;
 
         const bool skipCoinbaseTransactions =
             hasMember(body, "skipCoinbaseTransactions") ? getBoolFromJSON(body, "skipCoinbaseTransactions") : false;
