@@ -1499,7 +1499,7 @@ std::tuple<Error, uint16_t>
     {
         /* Loop through the blocks in descending order and throw their resulting
          * headers into the array for the response */
-        for (uint64_t i = height; i >= startHeight; i--)
+        for (uint64_t i = height; i >= startHeight && i <= height; i--)
         {
             const auto hash = m_core->getBlockHashByIndex(i);
 
