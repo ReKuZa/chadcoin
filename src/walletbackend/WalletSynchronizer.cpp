@@ -694,7 +694,7 @@ void WalletSynchronizer::stop()
     Logger::logger.log("Stopping sync process", Logger::DEBUG, {Logger::SYNC});
 
     /* Tell the threads to stop */
-    m_shouldStop = true;
+    m_shouldStop = true; 
 
     /* Tell the block downloader to stop and wait for it */
     m_blockDownloader.stop();
@@ -731,6 +731,20 @@ void WalletSynchronizer::reset(uint64_t startHeight)
 
     /* Discard downloaded blocks and sync status */
     m_blockDownloader = BlockDownloader(m_daemon, m_subWallets, m_startHeight, m_startTimestamp);
+
+    /* Need to call start in your calling code - We don't call it here so
+       you can schedule the start correctly */
+}
+ 
+
+void WalletSynchronizer::rewind(uint64_t rewindToHeight)
+{
+    /* Reset start height / timestamp */
+    m_rewindToHeight = rewindToHeight;
+    m_startTimestamp = 0;
+
+    /* Discard downloaded blocks and sync status */
+    m_blockDownloader = BlockDownloader(m_daemon, m_subWallets, m_rewindToHeight, m_startTimestamp);
 
     /* Need to call start in your calling code - We don't call it here so
        you can schedule the start correctly */
