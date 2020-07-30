@@ -893,7 +893,7 @@ void SubWallets::reset(const uint64_t scanHeight)
 void SubWallets::rewind(const uint64_t scanHeight)
 {
     m_lockedTransactions.clear();
-    removeForkedTransactions(scanHeight)
+    removeForkedTransactions(scanHeight);
 
 }
 

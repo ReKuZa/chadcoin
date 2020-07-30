@@ -308,15 +308,17 @@ void rewind(const std::shared_ptr<WalletBackend> walletBackend)
     if (!Utilities::confirm("Are you sure?"))
     {
         return;
-    }
+    } 
 
     std::cout << InformationMsg("Rewinding wallet...") << std::endl;
+
+    const uint64_t timestamp = 0;
 
     /* Don't want to queue up transaction events, since sync wallet will print
        them out */
     walletBackend->m_eventHandler->onTransaction.pause();
 
-    walletBackend->rewind(scanHeight);
+    walletBackend->rewind(scanHeight, timestamp);
 
     syncWallet(walletBackend);
 

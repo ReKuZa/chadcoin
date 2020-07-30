@@ -937,10 +937,10 @@ void WalletBackend::rewind(uint64_t scanHeight, uint64_t timestamp)
             timestamp = 0;
         }
 
-        /* Empty the sync status and reset the start height */
+        /* Empty the sync status and rewind the start height */
         m_walletSynchronizer->rewind(scanHeight);
 
-        /* Reset transactions, inputs, etc */
+        /* rewind transactions, inputs, etc */
         m_subWallets->rewind(scanHeight); 
 
         /* Save the resetted wallet - don't need safe save, already stopped wallet

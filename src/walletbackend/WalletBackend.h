@@ -194,6 +194,9 @@ class WalletBackend
 
     /* Scan the blockchain, starting from scanHeight / timestamp */
     void reset(uint64_t scanHeight, uint64_t timestamp);
+    
+    /* Rewind the blockchain, starting from scanHeight / timestamp */
+    void rewind(uint64_t scanHeight, uint64_t timestamp);
 
     /* Is the wallet a view only wallet */
     bool isViewWallet() const;
