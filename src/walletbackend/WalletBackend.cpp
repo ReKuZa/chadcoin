@@ -391,7 +391,9 @@ std::tuple<Error, std::shared_ptr<WalletBackend>> WalletBackend::openWallet(
     /* Check we successfully opened the file */
     if (!file)
     {
-        return {FILENAME_NON_EXISTENT, nullptr};
+        return {Error(FILENAME_NON_EXISTENT, "The filename you are attempting to open does not exist, "
+                                                 "or the wallet does not have permission to open it. Error: " +
+                                                 std::string(strerror(errno))), nullptr};
     }
 
     /* Read file into a buffer */
@@ -474,15 +476,6 @@ std::tuple<Error, std::shared_ptr<WalletBackend>> WalletBackend::openWallet(
 
     try
     {
-        const bool dumpJson = false;
-
-        /* For debugging purposes */
-        if (dumpJson)
-        {
-            std::ofstream o("walletData.json");
-            o << decryptedData << std::endl;
-        }
-
         rapidjson::Document walletJson;
 
         if (walletJson.Parse(decryptedData.c_str()).HasParseError())
@@ -563,7 +556,9 @@ Error WalletBackend::saveWalletJSONToDisk(std::string walletJSON, std::string fi
             Logger::FATAL,
             {Logger::FILESYSTEM, Logger::SAVE});
 
-        return INVALID_WALLET_FILENAME;
+        return Error(INVALID_WALLET_FILENAME,
+                      "The filename you are attempting to open does not exist, "
+                          "or the wallet does not have permission to open it. Error: " + std::string(strerror(errno)));
     }
 
     std::string saltString = std::string(salt, salt + sizeof(salt));
