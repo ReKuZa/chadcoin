@@ -740,6 +740,12 @@ void WalletSynchronizer::reset(uint64_t startHeight)
 void WalletSynchronizer::rewind(uint64_t startHeight)
 {
 
+    if (startHeight < m_startHeight)
+    {
+        m_startHeight = startHeight;
+        m_startTimestamp = 0;
+    }
+    
     /* Discard downloaded blocks and sync status */
     m_blockDownloader = BlockDownloader(m_daemon, m_subWallets, m_startHeight, m_startTimestamp);
 
