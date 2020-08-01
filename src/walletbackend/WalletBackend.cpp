@@ -921,7 +921,7 @@ void WalletBackend::reset(uint64_t scanHeight, uint64_t timestamp)
         unsafeSave();
 
         return 0;
-    });
+    }); 
 }
  
 void WalletBackend::rewind(uint64_t scanHeight, uint64_t timestamp)

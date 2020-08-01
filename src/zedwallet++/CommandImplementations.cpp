@@ -297,7 +297,7 @@ void reset(const std::shared_ptr<WalletBackend> walletBackend)
 
 void rewind(const std::shared_ptr<WalletBackend> walletBackend)
 {   
-    const uint64_t scanHeight = ZedUtilities::getRewindToHeight();
+    const uint64_t scanHeight = ZedUtilities::getRewindToHeight(walletBackend);
 
     std::cout << std::endl
               << InformationMsg("This process may take some time to complete.") << std::endl

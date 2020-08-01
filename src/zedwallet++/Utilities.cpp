@@ -77,12 +77,18 @@ namespace ZedUtilities
             }
         }
     }
-    uint64_t getRewindToHeight()
+    uint64_t getRewindToHeight(const std::shared_ptr<WalletBackend> walletBackend)
     { 
-        std::cout << "\n";
+
+
+        const WalletTypes::WalletStatus status = walletBackend->getStatus();
+
+
+        std::cout << "\n";  
 
         while (true)
         { 
+
             std::cout << InformationMsg("What block height do you want to ")
                       << InformationMsg("rewind your wallet to?") << "\n\n"
                       << "All blocks after this height will be rescanned, "
@@ -93,7 +99,10 @@ namespace ZedUtilities
                       << "err on the side of caution so transactions do not "
                       << "get missed."
                       << "\n\n"
-                      << InformationMsg("Hit enter for the sub-optimal default ") << InformationMsg("of zero: ");
+                      << InformationMsg("Hit enter for the default of <")
+                      << InformationMsg(status.walletBlockCount) 
+                      << InformationMsg(" - 1000 >") 
+                      << InformationMsg("(1000 blocks ago): ");
           
             std::string stringHeight;
 
@@ -104,7 +113,7 @@ namespace ZedUtilities
 
             if (stringHeight == "")
             {
-                return 0;
+                return status.walletBlockCount - 1000;
             }
 
             try
