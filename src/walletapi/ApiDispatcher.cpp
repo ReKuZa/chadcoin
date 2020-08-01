@@ -163,6 +163,9 @@ ApiDispatcher::ApiDispatcher(
         /* Reset the wallet from zero, or given scan height */
         .Put("/reset", router(&ApiDispatcher::resetWallet, WalletMustBeOpen, viewWalletsAllowed, bodyNotRequired))
 
+        /* Rewind the wallet to a specific block height */
+        .Put("/rewind", router(&ApiDispatcher::rewindWallet, WalletMustBeOpen, viewWalletsAllowed, bodyRequired))
+
         /* Swap node details */
         .Put("/node", router(&ApiDispatcher::setNodeInfo, WalletMustBeOpen, viewWalletsAllowed, bodyRequired))
 
@@ -1258,6 +1261,24 @@ std::tuple<Error, uint16_t> ApiDispatcher::resetWallet(const httplib::Request &r
     }
 
     m_walletBackend->reset(scanHeight, timestamp);
+
+    return {SUCCESS, 200};
+}
+
+std::tuple<Error, uint16_t> ApiDispatcher::rewindWallet(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body)
+{
+    std::scoped_lock lock(m_mutex);
+
+    uint64_t scanHeight = 0;
+
+    uint64_t timestamp = 0;
+
+    if (hasMember(body, "scanHeight"))
+    {
+        scanHeight = getUint64FromJSON(body, "scanHeight") < 1000 ? 0 : getUint64FromJSON(body, "scanHeight");
+    }
+
+    m_walletBackend->rewind(scanHeight, timestamp);
 
     return {SUCCESS, 200};
 }

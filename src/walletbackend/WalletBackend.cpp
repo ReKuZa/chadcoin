@@ -902,7 +902,7 @@ std::tuple<Error, std::string>
                 m_walletSynchronizer->reset(scanHeight);
 
                 /* Reset transactions, inputs, etc */
-                m_subWallets->reset(scanHeight);
+                m_subWallets->rewind(scanHeight);
             }
         }
 
