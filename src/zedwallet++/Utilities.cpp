@@ -82,7 +82,7 @@ namespace ZedUtilities
 
 
         const WalletTypes::WalletStatus status = walletBackend->getStatus();
-
+        const uint64_t defaultRewindHeight = status.walletBlockCount < 1000 ? 0 : status.walletBlockCount - 1000;
 
         std::cout << "\n";  
 
@@ -95,14 +95,9 @@ namespace ZedUtilities
                       << "use this command if you suspect a transaction "
                       << "has been missed by the sync process."
                       << "\n\n"
-                      << "If you do not know the exact height, "
-                      << "err on the side of caution so transactions do not "
-                      << "get missed."
-                      << "\n\n"
-                      << InformationMsg("Hit enter for the default of <")
-                      << InformationMsg(status.walletBlockCount) 
-                      << InformationMsg(" - 1000 >") 
-                      << InformationMsg("(1000 blocks ago): ");
+                      << InformationMsg("Hit enter for the default of ")
+                      << InformationMsg(defaultRewindHeight) 
+                      << InformationMsg(" (1000 blocks ago): ");
           
             std::string stringHeight;
 
@@ -113,7 +108,7 @@ namespace ZedUtilities
 
             if (stringHeight == "")
             {
-                return status.walletBlockCount - 1000;
+                return defaultRewindHeight;
             }
 
             try
