@@ -99,6 +99,7 @@ class WalletSynchronizer
         unsigned int threadCount);
 
     void reset(uint64_t startHeight);
+    void rewind(uint64_t startHeight);
 
     uint64_t getCurrentScanHeight() const;
 

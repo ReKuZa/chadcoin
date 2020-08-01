@@ -735,6 +735,23 @@ void WalletSynchronizer::reset(uint64_t startHeight)
     /* Need to call start in your calling code - We don't call it here so
        you can schedule the start correctly */
 }
+ 
+
+void WalletSynchronizer::rewind(uint64_t startHeight)
+{
+
+    if (startHeight < m_startHeight)
+    {
+        m_startHeight = startHeight;
+        m_startTimestamp = 0;
+    }
+    
+    /* Discard downloaded blocks and sync status */
+    m_blockDownloader = BlockDownloader(m_daemon, m_subWallets, m_startHeight, m_startTimestamp);
+
+    /* Need to call start in your calling code - We don't call it here so
+       you can schedule the start correctly */
+}
 
 /* Remove any transactions at this height or above, they were on a forked
    chain */

@@ -889,6 +889,14 @@ void SubWallets::reset(const uint64_t scanHeight)
         subWallet.reset(scanHeight);
     }
 }
+ 
+
+void SubWallets::rewind(const uint64_t scanHeight)
+{
+    m_lockedTransactions.clear();
+    removeForkedTransactions(scanHeight);
+
+}
 
 std::vector<Crypto::SecretKey> SubWallets::getPrivateSpendKeys() const
 {

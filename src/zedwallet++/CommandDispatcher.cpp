@@ -125,6 +125,10 @@ bool handleCommand(
     {
         reset(walletBackend);
     }
+    else if (command == "rewind")
+    {
+        rewind(walletBackend);
+    }
     else if (command == "save")
     {
         save(walletBackend);
