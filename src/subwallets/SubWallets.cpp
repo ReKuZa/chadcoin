@@ -131,6 +131,11 @@ std::tuple<Error, std::string>
 
     Crypto::secret_key_to_public_key(privateSpendKey, publicSpendKey);
 
+    if (m_subWallets.find(publicSpendKey) != m_subWallets.end())
+    {
+        return {SUBWALLET_ALREADY_EXISTS, std::string()};
+    }
+
     uint64_t timestamp = 0;
 
     const std::string address = Utilities::privateKeysToAddress(privateSpendKey, m_privateViewKey);
@@ -163,6 +168,11 @@ std::tuple<Error, std::string>
 
     /* Generate a deterministic secret spend key using the given wallet index */
     const auto [newPrivateKey, newPublicKey] = Crypto::generate_deterministic_subwallet_keys(primarySpendKey, walletIndex);
+
+    if (m_subWallets.find(newPublicKey) != m_subWallets.end())
+    {
+        return {SUBWALLET_ALREADY_EXISTS, std::string()};
+    }
 
     const auto [status, address] = importSubWallet(newPrivateKey, scanHeight);
 
