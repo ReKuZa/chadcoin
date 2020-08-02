@@ -51,6 +51,9 @@ struct Config
     /* Was the wallet pass specified on CLI */
     bool passGiven = false;
 
+    /* Was the reset flag specified on CLI */
+    bool resetGiven = false;
+
     /* Should we log walletd logs to a file */
     bool debug = false;
 
@@ -65,6 +68,9 @@ struct Config
 
     /* The wallet password */
     std::string walletPass = "";
+
+    /* The reset startHeight */
+    int resetFromHeight = 0;
 };
 
 struct AddressBookEntry
