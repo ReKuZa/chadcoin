@@ -29,6 +29,7 @@ ZedConfig parseArguments(int argc, char **argv)
     std::string remoteDaemon;
 
     int logLevel;
+    int reset;
 
     unsigned int threads;
 
@@ -65,6 +66,10 @@ ZedConfig parseArguments(int argc, char **argv)
          cxxopts::value<std::string>(config.walletPass),
          "<pass>")
 
+        ("reset",
+         "Recheck the chain from a specific block for transactions",
+         cxxopts::value<int>(reset),"<block height>")
+
         ("log-level",
          "Specify log level",
          cxxopts::value<int>(logLevel)->default_value(std::to_string(config.logLevel)),
@@ -93,6 +98,14 @@ ZedConfig parseArguments(int argc, char **argv)
 
         /* We could check if the string is empty, but an empty password is valid */
         config.passGiven = result.count("password") != 0;
+
+        /* check if reset flag was supplied */
+        config.resetGiven = result.count("reset") != 0;
+
+        if (config.resetGiven) 
+        {
+          config.resetFromHeight = reset;
+        }
     }
     catch (const cxxopts::OptionException &e)
     {
