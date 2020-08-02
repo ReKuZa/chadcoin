@@ -102,7 +102,8 @@ ZedConfig parseArguments(int argc, char **argv)
         /* check if reset flag was supplied */
         config.resetGiven = result.count("reset") != 0;
 
-        if (config.resetGiven) {
+        if (config.resetGiven) 
+        {
           config.resetFromHeight = reset;
         }
     }

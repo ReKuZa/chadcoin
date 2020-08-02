@@ -70,7 +70,7 @@ struct Config
     std::string walletPass = "";
 
     /* The reset startHeight */
-    int resetFromHeight = 0;
+    uint64_t resetFromHeight = 0;
 };
 
 struct AddressBookEntry

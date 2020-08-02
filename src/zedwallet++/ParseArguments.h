@@ -33,7 +33,7 @@ struct ZedConfig
     std::string walletPass;
 
     /* The reset block height */
-    uint resetFromHeight;
+    uint64_t resetFromHeight;
 
     /* Controls what level of messages to log */
     Logger::LogLevel logLevel = Logger::FATAL;
