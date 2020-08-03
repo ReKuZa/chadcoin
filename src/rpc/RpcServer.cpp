@@ -431,6 +431,9 @@ std::tuple<Error, uint16_t>
         writer.Key("difficulty");
         writer.Uint64(difficulty);
 
+        writer.Key("explorer");
+        writer.Bool(m_rpcMode >= RpcMode::BlockExplorerEnabled);
+
         writer.Key("greyPeerlistSize");
         writer.Uint64(m_p2p->getPeerlistManager().get_gray_peers_count());
 
