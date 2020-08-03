@@ -85,7 +85,7 @@ RpcServer::RpcServer(
             router(&RpcServer::getBlockHeaderByHash, RpcMode::BlockExplorerEnabled, bodyNotRequired, syncNotRequired))
 
         .Get(
-            "/block/\\d+", /* /block/{height} */
+            "/block/(\\d+)", /* /block/{height} */
             router(&RpcServer::getBlockHeaderByHeight, RpcMode::BlockExplorerEnabled, bodyNotRequired, syncNotRequired))
 
         .Get(
@@ -93,17 +93,17 @@ RpcServer::RpcServer(
             router(&RpcServer::getRawBlockByHash, RpcMode::BlockExplorerEnabled, bodyNotRequired, syncNotRequired))
 
         .Get(
-            "/block/\\d+/raw", /* /block/{height}/raw */
+            "/block/(\\d+)/raw", /* /block/{height}/raw */
             router(&RpcServer::getRawBlockByHeight, RpcMode::BlockExplorerEnabled, bodyNotRequired, syncNotRequired))
 
         .Get("/block/count", router(&RpcServer::getBlockCount, RpcMode::Default, bodyNotRequired, syncNotRequired))
 
         .Get(
-            "/block/headers/\\d+", /* /block/headers/{height} */
+            "/block/headers/(\\d+)", /* /block/headers/{height} */
             router(&RpcServer::getBlocksByHeight, RpcMode::BlockExplorerEnabled, bodyNotRequired, syncNotRequired))
 
         .Get(
-            "/block/last", /* /block/header/{hash} */
+            "/block/last",
             router(&RpcServer::getLastBlockHeader, RpcMode::Default, bodyNotRequired, syncNotRequired))
 
         .Post("/block/template", router(&RpcServer::getBlockTemplate, RpcMode::Default, bodyRequired, syncRequired))
@@ -113,7 +113,7 @@ RpcServer::RpcServer(
         .Get("/height", router(&RpcServer::height, RpcMode::Default, bodyNotRequired, syncNotRequired))
 
         .Get(
-            "/indexes/\\d+/\\d+",
+            "/indexes/(\\d+)/(\\d+)",
             router(&RpcServer::getGlobalIndexes, RpcMode::Default, bodyNotRequired, syncNotRequired))
 
         .Post("/indexes/random", router(&RpcServer::getRandomOuts, RpcMode::Default, bodyRequired, syncNotRequired))
@@ -912,15 +912,8 @@ std::tuple<Error, uint16_t>
 
     rapidjson::Writer<rapidjson::StringBuffer> writer(sb);
 
-    std::string stripped = req.path.substr(std::string("/indexes/").size());
-
-    uint64_t splitPos = stripped.find_first_of("/");
-
-    /* Take all the chars before the "/", this is our start height */
-    std::string startHeightStr = stripped.substr(0, splitPos);
-
-    /* Take all the chars after the "/", this is our end height */
-    std::string endHeightStr = stripped.substr(splitPos + 1);
+    std::string startHeightStr = req.matches[1];
+    std::string endHeightStr = req.matches[2];
 
     uint64_t startHeight;
 
@@ -1386,7 +1379,7 @@ std::tuple<Error, uint16_t> RpcServer::getBlockHeaderByHash(
 
     rapidjson::Writer<rapidjson::StringBuffer> writer(sb);
 
-    std::string hashStr = req.path.substr(std::string("/block/").size());
+    std::string hashStr = req.matches[1];
 
     Crypto::Hash hash;
 
@@ -1426,7 +1419,7 @@ std::tuple<Error, uint16_t> RpcServer::getBlockHeaderByHeight(
 
     try
     {
-        std::string heightStr = req.path.substr(std::string("/block/").size());
+        std::string heightStr = req.matches[1];
 
         height = std::stoull(heightStr);
 
@@ -1468,7 +1461,7 @@ std::tuple<Error, uint16_t>
 
     rapidjson::Writer<rapidjson::StringBuffer> writer(sb);
 
-    std::string heightStr = req.path.substr(std::string("/block/headers/").size());
+    std::string heightStr = req.matches[1];
 
     uint64_t height;
 
@@ -1607,7 +1600,7 @@ std::tuple<Error, uint16_t> RpcServer::getTransactionDetailsByHash(
 
     rapidjson::Writer<rapidjson::StringBuffer> writer(sb);
 
-    const std::string hashStr = req.path.substr(std::string("/transaction/").size());
+    const std::string hashStr = req.matches[1];
 
     Crypto::Hash hash;
 
@@ -1980,11 +1973,7 @@ std::tuple<Error, uint16_t>
 
     rapidjson::Writer<rapidjson::StringBuffer> writer(sb);
 
-    std::string stripped = req.path.substr(std::string("/block/").size());
-
-    uint64_t splitPos = stripped.find_first_of("/");
-
-    std::string hashStr = stripped.substr(0, splitPos);
+    std::string hashStr = req.matches[1];
 
     Crypto::Hash hash;
 
@@ -2016,11 +2005,7 @@ std::tuple<Error, uint16_t>
 
     rapidjson::Writer<rapidjson::StringBuffer> writer(sb);
 
-    std::string stripped = req.path.substr(std::string("/block/").size());
-
-    uint64_t splitPos = stripped.find_first_of("/");
-
-    std::string heightStr = stripped.substr(0, splitPos);
+    std::string heightStr = req.matches[1];
 
     uint32_t height = 0;
 
@@ -2069,11 +2054,7 @@ std::tuple<Error, uint16_t> RpcServer::getRawTransactionByHash(
 
     rapidjson::Writer<rapidjson::StringBuffer> writer(sb);
 
-    std::string stripped = req.path.substr(std::string("/transaction/").size());
-
-    uint64_t splitPos = stripped.find_first_of("/");
-
-    std::string hashStr = stripped.substr(0, splitPos);
+    std::string hashStr = req.matches[1];
 
     Crypto::Hash hash;
 
