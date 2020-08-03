@@ -128,7 +128,7 @@ RpcServer::RpcServer(
 
         .Post(
             "/transaction",
-            router(&RpcServer::sendTransaction, RpcMode::BlockExplorerEnabled, bodyRequired, syncRequired))
+            router(&RpcServer::sendTransaction, RpcMode::Default, bodyRequired, syncRequired))
 
         .Get(
             "/transaction/" + m_hashRegex, /* /transaction/{hash} */
