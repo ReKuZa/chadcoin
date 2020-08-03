@@ -403,7 +403,10 @@ std::tuple<Error, std::shared_ptr<WalletBackend>> WalletBackend::openWallet(
        and remove if it does. If it doesn't, return an error. */
     Error error = hasMagicIdentifier(buffer, Constants::IS_A_WALLET_IDENTIFIER, NOT_A_WALLET_FILE, NOT_A_WALLET_FILE);
 
-    return {error, nullptr};
+    if (error)
+    {
+        return {error, nullptr};
+    }
 
     using namespace CryptoPP;
 
