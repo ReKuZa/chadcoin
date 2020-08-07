@@ -326,6 +326,39 @@ void rewind(const std::shared_ptr<WalletBackend> walletBackend)
     walletBackend->m_eventHandler->onTransaction.resume();
 }
 
+void scanRange(const std::shared_ptr<WalletBackend> walletBackend)
+{   
+    std::cout << "got to function"; 
+
+    const auto [startHeight, endHeight ]  = ZedUtilities::getScanRange();    
+
+    std::cout << std::endl
+              << InformationMsg("This process may take some time to complete.") << std::endl
+              << InformationMsg("You can't make any transactions during the ") << InformationMsg("process.")
+              << std::endl
+            << std::endl;
+
+    if (!Utilities::confirm("Are you sure?"))
+    {
+        return;
+    }
+
+    std::cout << InformationMsg("Resetting wallet...") << std::endl;
+
+    const uint64_t timestamp = 0;
+
+    /* Don't want to queue up transaction events, since sync wallet will print
+       them out */
+    walletBackend->m_eventHandler->onTransaction.pause();
+
+    walletBackend->reset(startHeight, timestamp);
+
+    syncWallet(walletBackend);
+
+    /* Readd the event handler for new events */
+    walletBackend->m_eventHandler->onTransaction.resume();
+}
+
 void saveCSV(const std::shared_ptr<WalletBackend> walletBackend)
 {
     const auto transactions = walletBackend->getTransactions();

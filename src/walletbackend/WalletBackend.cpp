@@ -872,6 +872,33 @@ void WalletBackend::rewind(uint64_t scanHeight, uint64_t timestamp)
     });
 }
 
+void WalletBackend::scanRange(uint64_t scanHeight, uint64_t endScanHeight, uint64_t timestamp)
+{
+    m_syncRAIIWrapper->pauseSynchronizerToRunFunction([this, scanHeight, timestamp]() mutable {
+        /* Though the wallet synchronizer can support both a timestamp and a
+           scanheight, we need a fixed scan height to cut transactions from.
+           Since a transaction in block 10 could have a timestamp before a
+           transaction in block 9, we can't rely on timestamps to reset accurately. */
+        if (timestamp != 0)
+        {
+            scanHeight = Utilities::timestampToScanHeight(timestamp);
+            timestamp = 0;
+        }
+
+        /* Empty the sync status and reset the start height */
+        m_walletSynchronizer->rewind(scanHeight);
+
+        /* Reset transactions, inputs, etc */
+        m_subWallets->rewind(scanHeight);
+
+        /* Save the resetted wallet - don't need safe save, already stopped wallet
+           synchronizer */
+        unsafeSave();
+
+        return 0;
+    }); 
+}
+
 std::tuple<Error, std::string, Crypto::SecretKey, uint64_t> WalletBackend::addSubWallet()
 {
     return m_syncRAIIWrapper->pauseSynchronizerToRunFunction([this]() {

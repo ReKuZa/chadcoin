@@ -129,6 +129,10 @@ bool handleCommand(
     {
         rewind(walletBackend);
     }
+    else if (command == "scan_range")
+    {
+        scanRange(walletBackend);
+    }
     else if (command == "save")
     {
         save(walletBackend);
