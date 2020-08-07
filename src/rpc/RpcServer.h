@@ -221,5 +221,5 @@ class RpcServer
 
     const std::shared_ptr<CryptoNote::ICryptoNoteProtocolHandler> m_syncManager;
 
-    const std::string m_hashRegex = "[a-fA-F0-9]{64}";
+    const std::string m_hashRegex = "([a-fA-F0-9]{64})";
 };
