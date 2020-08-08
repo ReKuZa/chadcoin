@@ -6,7 +6,6 @@
 
 #include <WalletTypes.h>
 #include <memory>
-#include <string>
 #include <nigel/Nigel.h>
 #include <subwallets/SubWallets.h>
 #include <utilities/ThreadSafeDeque.h>

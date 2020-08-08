@@ -16,7 +16,6 @@
 #include <utilities/ThreadSafeDeque.h>
 #include <utilities/ThreadSafeQueue.h>
 #include <utilities/Utilities.h>
-#include <utilities/String.h>
 #include <walletbackend/Constants.h>
 
 ///////////////////////////////////
