@@ -163,7 +163,19 @@ namespace ZedUtilities
         stringStartHeight = "0";
       }
 
-      std::string defaultEndHeight = std::to_string(std::stoull(stringStartHeight) + 1000);
+      std::string defaultEndHeight;
+      
+      try 
+      {
+
+        defaultEndHeight = std::to_string(std::stoull(stringStartHeight) + 1000);
+      }
+      catch (const std::invalid_argument & ) 
+      {
+        std::cout << WarningMsg("Failed to parse height - input is not ") << WarningMsg("a number!") <<
+          std::endl <<
+          std::endl;
+      }
 
       std::cout << "\n\n" << InformationMsg("What height would you like to end ") <<
         InformationMsg("scanning your wallet from?") << "\n\n" <<
