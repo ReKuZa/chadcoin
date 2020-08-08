@@ -892,9 +892,8 @@ void WalletBackend::scanRange(uint64_t scanHeight, uint64_t endScanHeight, uint6
         /* Reset transactions, inputs, etc */
         m_subWallets->rewind(scanHeight);
 
-
+        /*Set endScanHeight so synchronizer knows when to stop and resum at top of the chain */
         m_walletSynchronizer->setEndScanHeight(endScanHeight);
-
 
         /* Save the resetted wallet - don't need safe save, already stopped wallet
            synchronizer */

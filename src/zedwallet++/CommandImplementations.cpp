@@ -341,7 +341,7 @@ void scanRange(const std::shared_ptr<WalletBackend> walletBackend)
         return;
     }
 
-    std::cout << InformationMsg("Resetting wallet...") << std::endl;
+    std::cout << InformationMsg("Syncing wallet...") << std::endl;
 
     const uint64_t timestamp = 0;
 

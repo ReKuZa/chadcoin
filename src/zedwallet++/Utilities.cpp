@@ -172,7 +172,7 @@ namespace ZedUtilities
 
             std::cout << "\n\n" << InformationMsg("What height would you like to end ")
                       << InformationMsg("scanning your wallet from?") << "\n\n"
-                      << InformationMsg("Hit enter for the sub-optimal default ") << InformationMsg("of ") << InformationMsg(defaultEndHeight)
+                      << InformationMsg("Hit enter for the default ") << InformationMsg("of ") << InformationMsg(defaultEndHeight)
                       << InformationMsg(": ");
           
             std::string stringEndHeight;

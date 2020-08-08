@@ -86,9 +86,9 @@ class WalletSynchronizer
     /* Public member functions */
     /////////////////////////////
 
-    void start();
+    void start(const bool stopSyncThread = false);
 
-    void stop();
+    void stop(const bool stopSyncThread = false);
 
     /* Converts the class to a json object */
     void toJSON(rapidjson::Writer<rapidjson::StringBuffer> &writer) const;

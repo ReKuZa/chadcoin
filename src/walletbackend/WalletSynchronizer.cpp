@@ -163,6 +163,24 @@ void WalletSynchronizer::mainLoop()
             }
         }
 
+
+        /* if endScanHeight is set, stop syncing at endScanHeight and start syncing from top of the chain */
+        if (endScanHeight != std::nullopt && getCurrentScanHeight() >= endScanHeight)
+        {
+            /* Stop wallet synchronizer but stopSyncThread*/
+            stop(true);
+
+            /*redefine m_blockDownloader to start from TOP height*/
+            m_startTimestamp = 0;
+            m_blockDownloader = BlockDownloader(m_daemon, m_subWallets, m_daemon->networkBlockCount(), m_startTimestamp);
+
+            /* Start wallet synchronizer but stopSyncThread*/
+            start(true);
+
+            endScanHeight = std::nullopt;
+
+        }
+
         /* If we're synced, check any transactions that may be in the pool */
         if (getCurrentScanHeight() >= m_daemon->localDaemonBlockCount() && !m_shouldStop)
         {
@@ -391,22 +409,12 @@ void WalletSynchronizer::completeBlockProcessing(
        when we save */
     m_blockDownloader.dropBlock(block.blockHeight, block.blockHash);
 
-
- 
-    if (endScanHeight > 0 && block.blockHeight >= endScanHeight) 
-    {
-
-        /* code to start resyncing from the top height*/
-        
-        // std::cout << "should exit at height: " << *endScanHeight << std::endl;
-        // m_blockDownloader = BlockDownloader(m_daemon, m_subWallets, m_daemon->networkBlockCount(), m_startTimestamp);
-    }
-
     if (block.blockHeight >= m_daemon->networkBlockCount())
     {
         m_eventHandler->onSynced.fire(block.blockHeight);
     }
 
+    
     Logger::logger.log("Finished processing block " + std::to_string(block.blockHeight), Logger::DEBUG, {Logger::SYNC});
 }
 
@@ -676,7 +684,7 @@ void WalletSynchronizer::checkLockedTransactions()
 /* Launch the worker thread in the background. It's safest to do this in a
    seperate function, so everything in the constructor gets initialized,
    and if we do any inheritance, things don't go awry. */
-void WalletSynchronizer::start()
+void WalletSynchronizer::start(const bool stopSyncThread)
 {
     Logger::logger.log("Starting sync process", Logger::DEBUG, {Logger::SYNC});
 
@@ -692,7 +700,9 @@ void WalletSynchronizer::start()
     m_blockProcessingQueue.start();
     m_processedBlocks.start();
 
-    m_syncThread = std::thread(&WalletSynchronizer::mainLoop, this);
+    if (!stopSyncThread) {
+        m_syncThread = std::thread(&WalletSynchronizer::mainLoop, this);
+    }
 
     m_syncThreads.clear();
 
@@ -702,7 +712,7 @@ void WalletSynchronizer::start()
     }
 }
 
-void WalletSynchronizer::stop()
+void WalletSynchronizer::stop(const bool stopSyncThread)
 {
     Logger::logger.log("Stopping sync process", Logger::DEBUG, {Logger::SYNC});
 
@@ -717,22 +727,27 @@ void WalletSynchronizer::stop()
     m_haveBlocksToProcess.notify_all();
     m_haveProcessedBlocksToHandle.notify_all();
 
-    m_blockProcessingQueue.clear();
-    m_processedBlocks.clear();
 
-    /* Wait for the block downloader thread to finish (if applicable) */
-    if (m_syncThread.joinable())
+    if (!stopSyncThread)
     {
-        m_syncThread.join();
+        m_blockProcessingQueue.clear();
+        m_processedBlocks.clear();
+
+        /* Wait for the block downloader thread to finish (if applicable) */
+        if (m_syncThread.joinable())
+        {
+
+            m_syncThread.join();
+        }
     }
 
     /* Wait for each child thread to finish */
     for (auto &thread : m_syncThreads)
-    {
+    {   
         if (thread.joinable())
         {
             thread.join();
-        }
+        } 
     }
 }
 
