@@ -167,14 +167,14 @@ void WalletSynchronizer::mainLoop()
         /* if endScanHeight is set, stop syncing at endScanHeight and start syncing from top of the chain */
         if (endScanHeight != std::nullopt && getCurrentScanHeight() >= endScanHeight)
         {
-            /* Stop wallet synchronizer but stopSyncThread*/
+            /* run Stop wallet synchronizer but with stopSyncThread */
             stop(true);
 
-            /*redefine m_blockDownloader to start from TOP height*/
+            /* Redefine m_blockDownloader to start from TOP height */
             m_startTimestamp = 0;
             m_blockDownloader = BlockDownloader(m_daemon, m_subWallets, m_daemon->networkBlockCount(), m_startTimestamp);
 
-            /* Start wallet synchronizer but stopSyncThread*/
+            /* Start wallet synchronizer but with stopSyncThread */
             start(true);
 
             endScanHeight = std::nullopt;
@@ -413,7 +413,6 @@ void WalletSynchronizer::completeBlockProcessing(
     {
         m_eventHandler->onSynced.fire(block.blockHeight);
     }
-
     
     Logger::logger.log("Finished processing block " + std::to_string(block.blockHeight), Logger::DEBUG, {Logger::SYNC});
 }
