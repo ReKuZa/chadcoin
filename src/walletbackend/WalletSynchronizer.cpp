@@ -16,6 +16,7 @@
 #include <utilities/ThreadSafeDeque.h>
 #include <utilities/ThreadSafeQueue.h>
 #include <utilities/Utilities.h>
+#include <utilities/String.h>
 #include <walletbackend/Constants.h>
 
 ///////////////////////////////////
@@ -104,6 +105,8 @@ WalletSynchronizer::~WalletSynchronizer()
 {
     stop();
 }
+
+std::optional<uint64_t> endScanHeight;
 
 /////////////////////
 /* CLASS FUNCTIONS */
@@ -388,6 +391,17 @@ void WalletSynchronizer::completeBlockProcessing(
        processed! Otherwise, we could miss a transaction depending upon
        when we save */
     m_blockDownloader.dropBlock(block.blockHeight, block.blockHash);
+
+
+ 
+    if (endScanHeight > 0 && block.blockHeight >= endScanHeight) 
+    {
+
+        /* code to start resyncing from the top height*/
+        
+        // std::cout << "should exit at height: " << *endScanHeight << std::endl;
+        // m_blockDownloader = BlockDownloader(m_daemon, m_subWallets, m_daemon->networkBlockCount(), m_startTimestamp);
+    }
 
     if (block.blockHeight >= m_daemon->networkBlockCount())
     {
@@ -751,6 +765,11 @@ void WalletSynchronizer::rewind(uint64_t startHeight)
 
     /* Need to call start in your calling code - We don't call it here so
        you can schedule the start correctly */
+}
+
+void WalletSynchronizer::setEndScanHeight(uint64_t endHeight)
+{   
+    endScanHeight = endHeight; 
 }
 
 /* Remove any transactions at this height or above, they were on a forked

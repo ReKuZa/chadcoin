@@ -6,6 +6,7 @@
 
 #include <WalletTypes.h>
 #include <memory>
+#include <string>
 #include <nigel/Nigel.h>
 #include <subwallets/SubWallets.h>
 #include <utilities/ThreadSafeDeque.h>
@@ -51,6 +52,9 @@ class WalletSynchronizer
     //////////////////
     /* Constructors */
     //////////////////
+
+
+    std::optional<uint64_t> endScanHeight;
 
     /* Default constructor */
     WalletSynchronizer();
@@ -100,6 +104,8 @@ class WalletSynchronizer
 
     void reset(uint64_t startHeight);
     void rewind(uint64_t startHeight);
+    void setEndScanHeight(uint64_t endHeight);
+    void testFunc();
 
     uint64_t getCurrentScanHeight() const;
 

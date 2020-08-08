@@ -9,7 +9,7 @@
 class WalletSynchronizerRAIIWrapper
 {
   public:
-    WalletSynchronizerRAIIWrapper(const std::shared_ptr<WalletSynchronizer> walletSynchronizer, std::optional<uint64_t> endScanHeight):
+    WalletSynchronizerRAIIWrapper(const std::shared_ptr<WalletSynchronizer> walletSynchronizer):
         m_walletSynchronizer(walletSynchronizer) {};
 
     template<typename T> auto pauseSynchronizerToRunFunction(T func)

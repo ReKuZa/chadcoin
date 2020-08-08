@@ -328,8 +328,6 @@ void rewind(const std::shared_ptr<WalletBackend> walletBackend)
 
 void scanRange(const std::shared_ptr<WalletBackend> walletBackend)
 {   
-    std::cout << "got to function"; 
-
     const auto [startHeight, endHeight ]  = ZedUtilities::getScanRange();    
 
     std::cout << std::endl
@@ -351,7 +349,8 @@ void scanRange(const std::shared_ptr<WalletBackend> walletBackend)
        them out */
     walletBackend->m_eventHandler->onTransaction.pause();
 
-    walletBackend->reset(startHeight, timestamp);
+    // walletBackend->reset(startHeight, timestamp);
+    walletBackend->scanRange(startHeight, endHeight, timestamp);
 
     syncWallet(walletBackend);
 
