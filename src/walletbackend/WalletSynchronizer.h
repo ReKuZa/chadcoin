@@ -104,7 +104,6 @@ class WalletSynchronizer
     void reset(uint64_t startHeight);
     void rewind(uint64_t startHeight);
     void setEndScanHeight(uint64_t endHeight);
-    void testFunc();
 
     uint64_t getCurrentScanHeight() const;
 
