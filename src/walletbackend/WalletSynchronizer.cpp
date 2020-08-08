@@ -105,8 +105,6 @@ WalletSynchronizer::~WalletSynchronizer()
     stop();
 }
 
-std::optional<uint64_t> endScanHeight;
-
 /////////////////////
 /* CLASS FUNCTIONS */
 /////////////////////
@@ -165,19 +163,19 @@ void WalletSynchronizer::mainLoop()
 
 
         /* if endScanHeight is set, stop syncing at endScanHeight and start syncing from top of the chain */
-        if (endScanHeight != std::nullopt && getCurrentScanHeight() >= endScanHeight)
+        if (m_endScanHeight != std::nullopt && getCurrentScanHeight() >= m_endScanHeight)
         {
-            /* run Stop wallet synchronizer but with stopSyncThread */
-            stop(true);
+            /* run stop wallet synchronizer stopSyncThread set to false*/
+            stop(false);
 
             /* Redefine m_blockDownloader to start from TOP height */
             m_startTimestamp = 0;
             m_blockDownloader = BlockDownloader(m_daemon, m_subWallets, m_daemon->networkBlockCount(), m_startTimestamp);
 
-            /* Start wallet synchronizer but with stopSyncThread */
-            start(true);
+            /* Start wallet synchronizer but with startSyncThread set to false*/
+            start(false);
 
-            endScanHeight = std::nullopt;
+            m_endScanHeight = std::nullopt;
 
         }
 
@@ -683,7 +681,7 @@ void WalletSynchronizer::checkLockedTransactions()
 /* Launch the worker thread in the background. It's safest to do this in a
    seperate function, so everything in the constructor gets initialized,
    and if we do any inheritance, things don't go awry. */
-void WalletSynchronizer::start(const bool stopSyncThread)
+void WalletSynchronizer::start(const bool startSyncThread)
 {
     Logger::logger.log("Starting sync process", Logger::DEBUG, {Logger::SYNC});
 
@@ -699,7 +697,8 @@ void WalletSynchronizer::start(const bool stopSyncThread)
     m_blockProcessingQueue.start();
     m_processedBlocks.start();
 
-    if (!stopSyncThread) {
+    if (startSyncThread) 
+    {
         m_syncThread = std::thread(&WalletSynchronizer::mainLoop, this);
     }
 
@@ -726,12 +725,12 @@ void WalletSynchronizer::stop(const bool stopSyncThread)
     m_haveBlocksToProcess.notify_all();
     m_haveProcessedBlocksToHandle.notify_all();
 
+    m_blockProcessingQueue.clear();
+    m_processedBlocks.clear();
 
-    if (!stopSyncThread)
+
+    if (stopSyncThread)
     {
-        m_blockProcessingQueue.clear();
-        m_processedBlocks.clear();
-
         /* Wait for the block downloader thread to finish (if applicable) */
         if (m_syncThread.joinable())
         {
@@ -782,7 +781,7 @@ void WalletSynchronizer::rewind(uint64_t startHeight)
 
 void WalletSynchronizer::setEndScanHeight(uint64_t endHeight)
 {   
-    endScanHeight = endHeight; 
+    m_endScanHeight = endHeight; 
 }
 
 /* Remove any transactions at this height or above, they were on a forked

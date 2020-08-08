@@ -86,9 +86,9 @@ class WalletSynchronizer
     /* Public member functions */
     /////////////////////////////
 
-    void start(const bool stopSyncThread = false);
+    void start(const bool startSyncThread = true);
 
-    void stop(const bool stopSyncThread = false);
+    void stop(const bool stopSyncThread = true);
 
     /* Converts the class to a json object */
     void toJSON(rapidjson::Writer<rapidjson::StringBuffer> &writer) const;
@@ -165,6 +165,9 @@ class WalletSynchronizer
 
     /* The height to start downloading block data from */
     uint64_t m_startHeight;
+
+    /* The height to end downloading block data from */
+    std::optional<uint64_t> m_endScanHeight;
 
     /* The private view key we use for decrypting transactions */
     Crypto::SecretKey m_privateViewKey;
