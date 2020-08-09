@@ -47,8 +47,8 @@ std::tuple<bool, bool, std::shared_ptr<WalletBackend>> selectionScreen(const Zed
         }
 
         /*Reset wallet if user requested it*/
-        if (config.resetGiven) 
-        {   
+        if (config.resetGiven)
+        {
             const uint64_t timestamp = 0;
             walletBackend->reset(config.resetFromHeight, timestamp);
         }

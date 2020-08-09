@@ -53,7 +53,7 @@ namespace CryptoNote
 
     bool Currency::generateGenesisBlock()
     {
-        genesisBlockTemplate = BlockTemplate{};
+        genesisBlockTemplate = BlockTemplate {};
 
         std::string genesisCoinbaseTxHex = CryptoNote::parameters::GENESIS_COINBASE_TX_HEX;
         BinaryArray minerTxBlob;
@@ -308,8 +308,8 @@ namespace CryptoNote
 
             if (!(r))
             {
-                logger(ERROR, BRIGHT_RED) << "while creating outs: failed to generate_key_derivation("
-                                          << publicViewKey << ", " << txkey.secretKey << ")";
+                logger(ERROR, BRIGHT_RED) << "while creating outs: failed to generate_key_derivation(" << publicViewKey
+                                          << ", " << txkey.secretKey << ")";
                 return false;
             }
 
@@ -893,9 +893,7 @@ namespace CryptoNote
         const auto publicViewKey = Constants::NULL_PUBLIC_KEY;
         const auto publicSpendKey = Constants::NULL_PUBLIC_KEY;
 
-        m_currency.constructMinerTx(
-            1, 0, 0, 0, 0, 0, publicViewKey, publicSpendKey, tx
-        );
+        m_currency.constructMinerTx(1, 0, 0, 0, 0, 0, publicViewKey, publicSpendKey, tx);
 
         return tx;
     }

@@ -10,6 +10,7 @@
 #include "KVBinaryInputStreamSerializer.h"
 #include "KVBinaryOutputStreamSerializer.h"
 
+#include <ZedwalletTypes.h>
 #include <common/MemoryInputStream.h>
 #include <common/StringOutputStream.h>
 #include <common/VectorOutputStream.h>
@@ -18,7 +19,6 @@
 #include <serialization/BinaryOutputStreamSerializer.h>
 #include <serialization/CryptoNoteSerialization.h>
 #include <vector>
-#include <ZedwalletTypes.h>
 
 namespace Common
 {

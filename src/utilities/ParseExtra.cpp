@@ -51,13 +51,8 @@ namespace Utilities
         for (auto it = extra.begin(); it < extra.end(); it++)
         {
             /* Nothing else to parse. */
-            if (seenPubKey
-             && seenPaymentID
-             && seenMergedMiningTag
-             && seenExtraData
-             && seenRecipientPublicViewKey
-             && seenRecipientPublicSpendKey
-             && seenTransactionPrivateKey)
+            if (seenPubKey && seenPaymentID && seenMergedMiningTag && seenExtraData && seenRecipientPublicViewKey
+                && seenRecipientPublicSpendKey && seenTransactionPrivateKey)
             {
                 break;
             }
@@ -106,7 +101,8 @@ namespace Utilities
                     /* Copy the nonce data into a new array to make things easier to read through */
                     std::vector<uint8_t> nonceData;
 
-                    std::copy(it + 1 + readNonceSize, it + 1 + readNonceSize + nonceSize, std::back_inserter(nonceData));
+                    std::copy(
+                        it + 1 + readNonceSize, it + 1 + readNonceSize + nonceSize, std::back_inserter(nonceData));
 
                     /* Loop through the nonce data looking for fields */
                     for (auto is = nonceData.begin(); is != nonceData.end(); is++)
@@ -140,7 +136,8 @@ namespace Utilities
 
                         /* If we encounter an arbitrary data field and there is at least one byte remaining
                            and we have not encountered the arbitrary data yet, then read it out */
-                        if (s == Constants::TX_EXTRA_ARBITRARY_DATA_IDENTIFIER && nElementsRemaining > 1 && !seenExtraData)
+                        if (s == Constants::TX_EXTRA_ARBITRARY_DATA_IDENTIFIER && nElementsRemaining > 1
+                            && !seenExtraData)
                         {
                             /* Read out the size of the data */
                             size_t dataSize = 0;
@@ -152,7 +149,10 @@ namespace Utilities
                             if (nElementsRemaining >= 1 + readDataSize + dataSize)
                             {
                                 /* Copy the data into the parsed extraData field */
-                                std::copy(is + 1 + readDataSize, is + 1 + readDataSize + dataSize, std::back_inserter(parsed.extraData));
+                                std::copy(
+                                    is + 1 + readDataSize,
+                                    is + 1 + readDataSize + dataSize,
+                                    std::back_inserter(parsed.extraData));
 
                                 seenExtraData = true;
 
@@ -211,7 +211,8 @@ namespace Utilities
                 }
             }
 
-            if (c == Constants::TX_EXTRA_RECIPIENT_PUBLIC_VIEW_KEY_IDENTIFIER && elementsRemaining > 32 && !seenRecipientPublicViewKey)
+            if (c == Constants::TX_EXTRA_RECIPIENT_PUBLIC_VIEW_KEY_IDENTIFIER && elementsRemaining > 32
+                && !seenRecipientPublicViewKey)
             {
                 /* Copy 32 chars, beginning from the next char */
                 std::copy(it + 1, it + 1 + 32, std::begin(parsed.recipientPublicViewKey.data));
@@ -225,7 +226,8 @@ namespace Utilities
                 continue;
             }
 
-            if (c == Constants::TX_EXTRA_RECIPIENT_PUBLIC_SPEND_KEY_IDENTIFIER && elementsRemaining > 32 && !seenRecipientPublicSpendKey)
+            if (c == Constants::TX_EXTRA_RECIPIENT_PUBLIC_SPEND_KEY_IDENTIFIER && elementsRemaining > 32
+                && !seenRecipientPublicSpendKey)
             {
                 /* Copy 32 chars, beginning from the next char */
                 std::copy(it + 1, it + 1 + 32, std::begin(parsed.recipientPublicSpendKey.data));
@@ -239,7 +241,8 @@ namespace Utilities
                 continue;
             }
 
-            if (c == Constants::TX_EXTRA_TRANSACTION_PRIVATE_KEY_IDENTIFIER && elementsRemaining > 32 && !seenTransactionPrivateKey)
+            if (c == Constants::TX_EXTRA_TRANSACTION_PRIVATE_KEY_IDENTIFIER && elementsRemaining > 32
+                && !seenTransactionPrivateKey)
             {
                 /* Copy 32 chars, beginning from the next char */
                 std::copy(it + 1, it + 1 + 32, std::begin(parsed.transactionPrivateKey.data));

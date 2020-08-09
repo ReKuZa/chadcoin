@@ -102,9 +102,7 @@ RpcServer::RpcServer(
             "/block/headers/(\\d+)", /* /block/headers/{height} */
             router(&RpcServer::getBlocksByHeight, RpcMode::BlockExplorerEnabled, bodyNotRequired, syncNotRequired))
 
-        .Get(
-            "/block/last",
-            router(&RpcServer::getLastBlockHeader, RpcMode::Default, bodyNotRequired, syncNotRequired))
+        .Get("/block/last", router(&RpcServer::getLastBlockHeader, RpcMode::Default, bodyNotRequired, syncNotRequired))
 
         .Post("/block/template", router(&RpcServer::getBlockTemplate, RpcMode::Default, bodyRequired, syncRequired))
 
@@ -126,9 +124,7 @@ RpcServer::RpcServer(
 
         .Post("/sync/raw", router(&RpcServer::getRawBlocks, RpcMode::Default, bodyRequired, syncNotRequired))
 
-        .Post(
-            "/transaction",
-            router(&RpcServer::sendTransaction, RpcMode::Default, bodyRequired, syncRequired))
+        .Post("/transaction", router(&RpcServer::sendTransaction, RpcMode::Default, bodyRequired, syncRequired))
 
         .Get(
             "/transaction/" + m_hashRegex, /* /transaction/{hash} */
@@ -349,9 +345,7 @@ void RpcServer::middleware(
     }
 }
 
-void RpcServer::failRequest(
-    const Error error,
-    httplib::Response &res)
+void RpcServer::failRequest(const Error error, httplib::Response &res)
 {
     rapidjson::StringBuffer sb;
 
@@ -1046,8 +1040,11 @@ std::tuple<Error, uint16_t>
 
         if (reservedOffset + reserveSize > blockBlob.size())
         {
-            return {Error(API_INTERNAL_ERROR,
-                          "Internal error: failed to create block template, not enough space for reserved bytes"), 500};
+            return {
+                Error(
+                    API_INTERNAL_ERROR,
+                    "Internal error: failed to create block template, not enough space for reserved bytes"),
+                500};
         }
     }
 
@@ -1911,8 +1908,8 @@ std::tuple<Error, uint16_t>
 
         const uint64_t startTimestamp = hasMember(body, "timestamp") ? getUint64FromJSON(body, "timestamp") : 0;
 
-        const uint64_t blockCount = hasMember(body, "count") ? getUint64FromJSON(body, "count") :
-                                                             CryptoNote::BLOCKS_SYNCHRONIZING_DEFAULT_COUNT;
+        const uint64_t blockCount = hasMember(body, "count") ? getUint64FromJSON(body, "count")
+                                                             : CryptoNote::BLOCKS_SYNCHRONIZING_DEFAULT_COUNT;
 
         const bool skipCoinbaseTransactions =
             hasMember(body, "skipCoinbaseTransactions") ? getBoolFromJSON(body, "skipCoinbaseTransactions") : false;

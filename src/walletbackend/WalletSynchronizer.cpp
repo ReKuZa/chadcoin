@@ -163,20 +163,20 @@ void WalletSynchronizer::mainLoop()
 
 
         /* if endScanHeight is set, stop syncing at endScanHeight and start syncing from top of the chain */
-        if (m_endScanHeight != std::nullopt && getCurrentScanHeight() >= m_endScanHeight)
+        if (m_endScanHeight && getCurrentScanHeight() >= m_endScanHeight)
         {
             /* run stop wallet synchronizer stopSyncThread set to false*/
             stop(false);
 
             /* Redefine m_blockDownloader to start from TOP height */
             m_startTimestamp = 0;
-            m_blockDownloader = BlockDownloader(m_daemon, m_subWallets, m_daemon->networkBlockCount(), m_startTimestamp);
+            m_blockDownloader =
+                BlockDownloader(m_daemon, m_subWallets, m_daemon->networkBlockCount(), m_startTimestamp);
 
             /* Start wallet synchronizer but with startSyncThread set to false*/
             start(false);
 
             m_endScanHeight = std::nullopt;
-
         }
 
         /* If we're synced, check any transactions that may be in the pool */
@@ -411,7 +411,7 @@ void WalletSynchronizer::completeBlockProcessing(
     {
         m_eventHandler->onSynced.fire(block.blockHeight);
     }
-    
+
     Logger::logger.log("Finished processing block " + std::to_string(block.blockHeight), Logger::DEBUG, {Logger::SYNC});
 }
 
@@ -582,24 +582,23 @@ std::vector<std::tuple<Crypto::PublicKey, WalletTypes::TransactionInput>> Wallet
                we'll let the subwallet do this since we need the private spend
                key. We use the key images to detect outgoing transactions,
                and we use the transaction inputs to make transactions ourself */
-            const auto [keyImage, privateEphemeral]
-                = m_subWallets->getTxInputKeyImage(derivedSpendKey, derivation, outputIndex);
+            const auto [keyImage, privateEphemeral] =
+                m_subWallets->getTxInputKeyImage(derivedSpendKey, derivation, outputIndex);
 
             const uint64_t spendHeight = 0;
 
-            const WalletTypes::TransactionInput input({
-                keyImage,
-                output.amount,
-                blockHeight,
-                rawTX.transactionPublicKey,
-                outputIndex,
-                output.globalOutputIndex,
-                output.key,
-                spendHeight,
-                rawTX.unlockTime,
-                rawTX.hash,
-                privateEphemeral
-            });
+            const WalletTypes::TransactionInput input(
+                {keyImage,
+                 output.amount,
+                 blockHeight,
+                 rawTX.transactionPublicKey,
+                 outputIndex,
+                 output.globalOutputIndex,
+                 output.key,
+                 spendHeight,
+                 rawTX.unlockTime,
+                 rawTX.hash,
+                 privateEphemeral});
 
             inputs.emplace_back(derivedSpendKey, input);
         }
@@ -697,7 +696,7 @@ void WalletSynchronizer::start(const bool startSyncThread)
     m_blockProcessingQueue.start();
     m_processedBlocks.start();
 
-    if (startSyncThread) 
+    if (startSyncThread)
     {
         m_syncThread = std::thread(&WalletSynchronizer::mainLoop, this);
     }
@@ -734,18 +733,17 @@ void WalletSynchronizer::stop(const bool stopSyncThread)
         /* Wait for the block downloader thread to finish (if applicable) */
         if (m_syncThread.joinable())
         {
-
             m_syncThread.join();
         }
     }
 
     /* Wait for each child thread to finish */
     for (auto &thread : m_syncThreads)
-    {   
+    {
         if (thread.joinable())
         {
             thread.join();
-        } 
+        }
     }
 }
 
@@ -761,17 +759,16 @@ void WalletSynchronizer::reset(uint64_t startHeight)
     /* Need to call start in your calling code - We don't call it here so
        you can schedule the start correctly */
 }
- 
+
 
 void WalletSynchronizer::rewind(uint64_t startHeight)
 {
-
     if (startHeight < m_startHeight)
     {
         m_startHeight = startHeight;
         m_startTimestamp = 0;
     }
-    
+
     /* Discard downloaded blocks and sync status */
     m_blockDownloader = BlockDownloader(m_daemon, m_subWallets, m_startHeight, m_startTimestamp);
 
@@ -780,8 +777,8 @@ void WalletSynchronizer::rewind(uint64_t startHeight)
 }
 
 void WalletSynchronizer::setEndScanHeight(uint64_t endHeight)
-{   
-    m_endScanHeight = endHeight; 
+{
+    m_endScanHeight = endHeight;
 }
 
 /* Remove any transactions at this height or above, they were on a forked

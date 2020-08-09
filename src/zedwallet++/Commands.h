@@ -21,9 +21,7 @@ class AdvancedCommand : public Command
 {
   public:
     AdvancedCommand(std::string commandName, std::string description, bool viewWalletSupport, bool advanced):
-        Command(commandName, description),
-        viewWalletSupport(viewWalletSupport),
-        advanced(advanced)
+        Command(commandName, description), viewWalletSupport(viewWalletSupport), advanced(advanced)
     {
     }
 

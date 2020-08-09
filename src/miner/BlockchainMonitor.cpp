@@ -7,12 +7,12 @@
 
 #include "common/StringTools.h"
 
+#include <iostream>
 #include <system/EventLock.h>
 #include <system/InterruptedException.h>
 #include <system/Timer.h>
 #include <utilities/ColouredMsg.h>
 #include <version.h>
-#include <iostream>
 
 BlockchainMonitor::BlockchainMonitor(
     System::Dispatcher &dispatcher,
@@ -110,8 +110,7 @@ std::optional<Crypto::Hash> BlockchainMonitor::requestLastBlockHash()
     {
         std::stringstream stream;
 
-        stream << "Failed to parse block hash from daemon. Received data:\n"
-               << res->body << std::endl;
+        stream << "Failed to parse block hash from daemon. Received data:\n" << res->body << std::endl;
 
         std::cout << WarningMsg(stream.str());
 

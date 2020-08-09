@@ -45,10 +45,7 @@ struct AddressBookEntry
     AddressBookEntry(std::string friendlyName): friendlyName(friendlyName) {}
 
     AddressBookEntry(std::string friendlyName, std::string address, std::string paymentID, bool integratedAddress):
-        friendlyName(friendlyName),
-        address(address),
-        paymentID(paymentID),
-        integratedAddress(integratedAddress)
+        friendlyName(friendlyName), address(address), paymentID(paymentID), integratedAddress(integratedAddress)
     {
     }
 

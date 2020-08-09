@@ -13,9 +13,9 @@
 #include <mnemonics/Mnemonics.h>
 #include <utilities/ColouredMsg.h>
 #include <utilities/Input.h>
+#include <utilities/PasswordContainer.h>
 #include <utilities/String.h>
 #include <zedwallet++/CommandImplementations.h>
-#include <utilities/PasswordContainer.h>
 #include <zedwallet++/Utilities.h>
 
 std::shared_ptr<WalletBackend> importViewWallet(const ZedConfig &config)

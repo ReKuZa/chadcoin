@@ -8,9 +8,10 @@
 #include "MinerManager.h"
 /////////////////////////
 
+#include "rapidjson/document.h"
 #include "rapidjson/stringbuffer.h"
 #include "rapidjson/writer.h"
-#include "rapidjson/document.h"
+
 #include <common/CryptoNoteTools.h>
 #include <common/StringTools.h>
 #include <common/TransactionExtra.h>
@@ -278,8 +279,7 @@ namespace Miner
             {
                 std::stringstream stream;
 
-                stream << "Failed to parse block template from daemon. Received data:\n"
-                       << res->body <<  std::endl;
+                stream << "Failed to parse block template from daemon. Received data:\n" << res->body << std::endl;
 
                 std::cout << WarningMsg(stream.str());
 

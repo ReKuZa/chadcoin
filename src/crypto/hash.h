@@ -393,8 +393,7 @@ namespace Crypto
             argon2_optimization_selected = true;
         }
 
-        argon2id_hash_raw(
-            iterations, memory, threads, data, length, salt, CHUKWA_SALTLEN, hash.data, CHUKWA_HASHLEN);
+        argon2id_hash_raw(iterations, memory, threads, data, length, salt, CHUKWA_SALTLEN, hash.data, CHUKWA_HASHLEN);
     }
 
     inline void chukwa_slow_hash_v1(const void *data, size_t length, Hash &hash)

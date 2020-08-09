@@ -15,10 +15,7 @@ template<typename T> class ColouredMsg
     ColouredMsg(const T msg, const Common::Console::Color colour): msg(msg), colour(colour) {}
 
     ColouredMsg(const T msg, const int padding, const Common::Console::Color colour):
-        msg(msg),
-        colour(colour),
-        padding(padding),
-        pad(true)
+        msg(msg), colour(colour), padding(padding), pad(true)
     {
     }
 

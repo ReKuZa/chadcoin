@@ -100,8 +100,10 @@ class ApiDispatcher
         importAddress(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body);
 
     /* Imports a deterministic address using a wallet index */
-    std::tuple<Error, uint16_t>
-        importDeterministicAddress(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body);
+    std::tuple<Error, uint16_t> importDeterministicAddress(
+        const httplib::Request &req,
+        httplib::Response &res,
+        const rapidjson::Document &body);
 
     /* Imports a view only address with a public spend key */
     std::tuple<Error, uint16_t>
@@ -124,28 +126,40 @@ class ApiDispatcher
         sendBasicTransaction(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body);
 
     /* Make a basic transaction, optionally relaying to the network */
-    std::tuple<Error, uint16_t>
-        makeBasicTransaction(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body, const bool sendTransaction);
+    std::tuple<Error, uint16_t> makeBasicTransaction(
+        const httplib::Request &req,
+        httplib::Response &res,
+        const rapidjson::Document &body,
+        const bool sendTransaction);
 
     /* Prepare (don't send) an advanced transaction */
-    std::tuple<Error, uint16_t>
-        prepareAdvancedTransaction(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body);
+    std::tuple<Error, uint16_t> prepareAdvancedTransaction(
+        const httplib::Request &req,
+        httplib::Response &res,
+        const rapidjson::Document &body);
 
     /* Send an advanced transaction */
     std::tuple<Error, uint16_t>
         sendAdvancedTransaction(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body);
 
     /* Make an advanced transaction, optionally relaying to the network */
-    std::tuple<Error, uint16_t>
-        makeAdvancedTransaction(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body, const bool sendTransaction);
+    std::tuple<Error, uint16_t> makeAdvancedTransaction(
+        const httplib::Request &req,
+        httplib::Response &res,
+        const rapidjson::Document &body,
+        const bool sendTransaction);
 
     /* Send a basic fusion transaction */
-    std::tuple<Error, uint16_t>
-        sendBasicFusionTransaction(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body);
+    std::tuple<Error, uint16_t> sendBasicFusionTransaction(
+        const httplib::Request &req,
+        httplib::Response &res,
+        const rapidjson::Document &body);
 
     /* Send a more customizable fusion transaction */
-    std::tuple<Error, uint16_t>
-        sendAdvancedFusionTransaction(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body);
+    std::tuple<Error, uint16_t> sendAdvancedFusionTransaction(
+        const httplib::Request &req,
+        httplib::Response &res,
+        const rapidjson::Document &body);
 
     /* Export wallet to file in JSON format */
     std::tuple<Error, uint16_t>
@@ -215,8 +229,10 @@ class ApiDispatcher
     std::tuple<Error, uint16_t>
         getPrimaryAddress(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body) const;
 
-    std::tuple<Error, uint16_t>
-        createIntegratedAddress(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body) const;
+    std::tuple<Error, uint16_t> createIntegratedAddress(
+        const httplib::Request &req,
+        httplib::Response &res,
+        const rapidjson::Document &body) const;
 
     std::tuple<Error, uint16_t>
         getTransactions(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body) const;
@@ -251,8 +267,10 @@ class ApiDispatcher
         httplib::Response &res,
         const rapidjson::Document &body) const;
 
-    std::tuple<Error, uint16_t>
-        getTransactionDetails(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body) const;
+    std::tuple<Error, uint16_t> getTransactionDetails(
+        const httplib::Request &req,
+        httplib::Response &res,
+        const rapidjson::Document &body) const;
 
     std::tuple<Error, uint16_t> getTransactionsByPaymentId(
         const httplib::Request &req,
@@ -267,8 +285,10 @@ class ApiDispatcher
     std::tuple<Error, uint16_t>
         getBalance(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body) const;
 
-    std::tuple<Error, uint16_t>
-        getBalanceForAddress(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body) const;
+    std::tuple<Error, uint16_t> getBalanceForAddress(
+        const httplib::Request &req,
+        httplib::Response &res,
+        const rapidjson::Document &body) const;
 
     std::tuple<Error, uint16_t>
         getBalances(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body) const;
@@ -304,8 +324,9 @@ class ApiDispatcher
     bool assertWalletOpen() const;
 
     /* Converts a public spend key to an address in a transactions json */
-    void publicKeysToAddresses(const WalletTypes::Transaction &transaction,
-                               rapidjson::Writer<rapidjson::StringBuffer> &writer) const;
+    void publicKeysToAddresses(
+        const WalletTypes::Transaction &transaction,
+        rapidjson::Writer<rapidjson::StringBuffer> &writer) const;
 
     std::string hashPassword(const std::string password) const;
 

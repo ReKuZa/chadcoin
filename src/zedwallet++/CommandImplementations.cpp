@@ -296,7 +296,7 @@ void reset(const std::shared_ptr<WalletBackend> walletBackend)
 }
 
 void rewind(const std::shared_ptr<WalletBackend> walletBackend)
-{   
+{
     const uint64_t scanHeight = ZedUtilities::getRewindToHeight(walletBackend);
 
     std::cout << std::endl
@@ -308,7 +308,7 @@ void rewind(const std::shared_ptr<WalletBackend> walletBackend)
     if (!Utilities::confirm("Are you sure?"))
     {
         return;
-    } 
+    }
 
     std::cout << InformationMsg("Rewinding wallet...") << std::endl;
 
@@ -327,14 +327,14 @@ void rewind(const std::shared_ptr<WalletBackend> walletBackend)
 }
 
 void scanRange(const std::shared_ptr<WalletBackend> walletBackend)
-{   
-    const auto [startHeight, endHeight ]  = ZedUtilities::getScanRange();    
+{
+    const auto [startHeight, endHeight] = ZedUtilities::getScanRange();
 
     std::cout << std::endl
               << InformationMsg("This process may take some time to complete.") << std::endl
               << InformationMsg("You can't make any transactions during the ") << InformationMsg("process.")
               << std::endl
-            << std::endl;
+              << std::endl;
 
     if (!Utilities::confirm("Are you sure?"))
     {
@@ -682,11 +682,11 @@ void getTxPrivateKey(const std::shared_ptr<WalletBackend> walletBackend)
 void setLogLevel()
 {
     const std::vector<Command> logLevels = {
-        Command("Trace",    "Display extremely detailed logging output"),
-        Command("Debug",    "Display highly detailed logging output"),
-        Command("Info",     "Display detailed logging output"),
-        Command("Warning",  "Display only warning and error logging output"),
-        Command("Fatal",    "Display only error logging output"),
+        Command("Trace", "Display extremely detailed logging output"),
+        Command("Debug", "Display highly detailed logging output"),
+        Command("Info", "Display detailed logging output"),
+        Command("Warning", "Display only warning and error logging output"),
+        Command("Fatal", "Display only error logging output"),
         Command("Disabled", "Don't display any logging output"),
     };
 

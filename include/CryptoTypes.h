@@ -9,9 +9,9 @@
 #include "rapidjson/stringbuffer.h"
 #include "rapidjson/writer.h"
 
+#include <JsonHelper.h>
 #include <algorithm>
 #include <common/StringTools.h>
-#include <JsonHelper.h>
 #include <cstdint>
 #include <iterator>
 

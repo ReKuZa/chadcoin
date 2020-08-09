@@ -3,8 +3,8 @@
 //
 // Please see the included LICENSE file for more information.
 
-#include "version.h"
 #include "JsonHelper.h"
+#include "version.h"
 
 #include <boost/format.hpp>
 #include <cryptonotecore/Core.h>
@@ -56,33 +56,18 @@ DaemonCommandsHandler::DaemonCommandsHandler(
     const std::string ip,
     const uint32_t port,
     const DaemonConfig::DaemonConfiguration &config):
-    m_core(core),
-    m_srv(srv),
-    logger(log, "daemon"),
-    m_logManager(log),
-    m_rpcServer(ip.c_str(), port),
-    m_config(config)
+    m_core(core), m_srv(srv), logger(log, "daemon"), m_logManager(log), m_rpcServer(ip.c_str(), port), m_config(config)
 {
     m_consoleHandler.setHandler(
-        "?",
-        std::bind(&DaemonCommandsHandler::help, this, std::placeholders::_1),
-        "Show this help");
+        "?", std::bind(&DaemonCommandsHandler::help, this, std::placeholders::_1), "Show this help");
     m_consoleHandler.setHandler(
-        "exit",
-        std::bind(&DaemonCommandsHandler::exit, this, std::placeholders::_1),
-        "Shutdown the daemon");
+        "exit", std::bind(&DaemonCommandsHandler::exit, this, std::placeholders::_1), "Shutdown the daemon");
     m_consoleHandler.setHandler(
-        "help",
-        std::bind(&DaemonCommandsHandler::help, this, std::placeholders::_1),
-        "Show this help");
+        "help", std::bind(&DaemonCommandsHandler::help, this, std::placeholders::_1), "Show this help");
     m_consoleHandler.setHandler(
-        "print_pl",
-        std::bind(&DaemonCommandsHandler::print_pl, this, std::placeholders::_1),
-        "Print peer list");
+        "print_pl", std::bind(&DaemonCommandsHandler::print_pl, this, std::placeholders::_1), "Print peer list");
     m_consoleHandler.setHandler(
-        "print_cn",
-        std::bind(&DaemonCommandsHandler::print_cn, this, std::placeholders::_1),
-        "Print connections");
+        "print_cn", std::bind(&DaemonCommandsHandler::print_cn, this, std::placeholders::_1), "Print connections");
     m_consoleHandler.setHandler(
         "print_block",
         std::bind(&DaemonCommandsHandler::print_block, this, std::placeholders::_1),
@@ -104,9 +89,7 @@ DaemonCommandsHandler::DaemonCommandsHandler(
         std::bind(&DaemonCommandsHandler::set_log, this, std::placeholders::_1),
         "set_log <level> - Change current log level, <level> is a number 0-4");
     m_consoleHandler.setHandler(
-        "status",
-        std::bind(&DaemonCommandsHandler::status, this, std::placeholders::_1),
-        "Show daemon status");
+        "status", std::bind(&DaemonCommandsHandler::status, this, std::placeholders::_1), "Show daemon status");
 }
 
 //--------------------------------------------------------------------------------
@@ -321,8 +304,8 @@ bool DaemonCommandsHandler::print_pool_sh(const std::vector<std::string> &args)
     {
         CryptoNote::CachedTransaction ctx(tx);
 
-        std::cout << InformationMsg("Hash: ") << SuccessMsg(ctx.getTransactionHash())
-                  << InformationMsg(", Size: ") << SuccessMsg(Utilities::prettyPrintBytes(ctx.getTransactionBinaryArray().size()))
+        std::cout << InformationMsg("Hash: ") << SuccessMsg(ctx.getTransactionHash()) << InformationMsg(", Size: ")
+                  << SuccessMsg(Utilities::prettyPrintBytes(ctx.getTransactionBinaryArray().size()))
                   << InformationMsg(", Fee: ") << SuccessMsg(Utilities::formatAmount(ctx.getTransactionFee()))
                   << InformationMsg(", Fusion: ");
 
@@ -342,7 +325,8 @@ bool DaemonCommandsHandler::print_pool_sh(const std::vector<std::string> &args)
 
     std::cout << InformationMsg("\nTotal transactions: ") << SuccessMsg(pool.size())
               << InformationMsg("\nTotal size of transactions: ") << SuccessMsg(Utilities::prettyPrintBytes(totalSize))
-              << InformationMsg("\nEstimated full blocks to clear: ") << SuccessMsg(blocksRequiredToClear) << std::endl << std::endl;
+              << InformationMsg("\nEstimated full blocks to clear: ") << SuccessMsg(blocksRequiredToClear) << std::endl
+              << std::endl;
 
     return true;
 }
@@ -373,10 +357,8 @@ bool DaemonCommandsHandler::status(const std::vector<std::string> &args)
     const uint64_t hours = minutes / 60;
     const uint64_t days = hours / 24;
 
-    const std::string uptimeStr = std::to_string(days) + "d "
-                                + std::to_string(hours % 24) + "h "
-                                + std::to_string(minutes % 60) + "m "
-                                + std::to_string(seconds % 60) + "s";
+    const std::string uptimeStr = std::to_string(days) + "d " + std::to_string(hours % 24) + "h "
+                                  + std::to_string(minutes % 60) + "m " + std::to_string(seconds % 60) + "s";
 
     const uint64_t height = getUint64FromJSON(resp, "height");
     const uint64_t networkHeight = getUint64FromJSON(resp, "networkHeight");
@@ -392,19 +374,21 @@ bool DaemonCommandsHandler::status(const std::vector<std::string> &args)
 
     std::vector<std::tuple<std::string, std::string>> statusTable;
 
-    statusTable.push_back({"Local Height",          std::to_string(height)});
-    statusTable.push_back({"Network Height",        std::to_string(networkHeight)});
-    statusTable.push_back({"Percentage Synced",     Utilities::get_sync_percentage(height, networkHeight) + "%"});
-    statusTable.push_back({"Network Hashrate",      Utilities::get_mining_speed(getUint64FromJSON(resp, "hashrate"))});
-    statusTable.push_back({"Block Version",         "v" + std::to_string(getUint64FromJSON(resp, "majorVersion"))
-                                                + "." + std::to_string(getUint64FromJSON(resp, "minorVersion"))});
-    statusTable.push_back({"Incoming Connections",  std::to_string(getUint64FromJSON(resp, "incomingConnections"))});
-    statusTable.push_back({"Outgoing Connections",  std::to_string(getUint64FromJSON(resp, "outgoingConnections"))});
-    statusTable.push_back({"Uptime",                uptimeStr});
-    statusTable.push_back({"Fork Status",           Utilities::get_update_status(forkStatus)});
-    statusTable.push_back({"Next Fork",             Utilities::get_fork_time(networkHeight, upgradeHeights)});
+    statusTable.push_back({"Local Height", std::to_string(height)});
+    statusTable.push_back({"Network Height", std::to_string(networkHeight)});
+    statusTable.push_back({"Percentage Synced", Utilities::get_sync_percentage(height, networkHeight) + "%"});
+    statusTable.push_back({"Network Hashrate", Utilities::get_mining_speed(getUint64FromJSON(resp, "hashrate"))});
+    statusTable.push_back(
+        {"Block Version",
+         "v" + std::to_string(getUint64FromJSON(resp, "majorVersion")) + "."
+             + std::to_string(getUint64FromJSON(resp, "minorVersion"))});
+    statusTable.push_back({"Incoming Connections", std::to_string(getUint64FromJSON(resp, "incomingConnections"))});
+    statusTable.push_back({"Outgoing Connections", std::to_string(getUint64FromJSON(resp, "outgoingConnections"))});
+    statusTable.push_back({"Uptime", uptimeStr});
+    statusTable.push_back({"Fork Status", Utilities::get_update_status(forkStatus)});
+    statusTable.push_back({"Next Fork", Utilities::get_fork_time(networkHeight, upgradeHeights)});
     statusTable.push_back({"Transaction Pool Size", std::to_string(m_core.getPoolTransactionHashes().size())});
-    statusTable.push_back({"DB Engine",             m_config.enableLevelDB ? "LevelDB" : "RocksDB"});
+    statusTable.push_back({"DB Engine", m_config.enableLevelDB ? "LevelDB" : "RocksDB"});
     statusTable.push_back({"Version", PROJECT_VERSION});
 
     size_t longestValue = 0;
