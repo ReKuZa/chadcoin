@@ -200,11 +200,23 @@ namespace ZedUtilities
 
             try
             {
-                return
-                {
+
+              endHeight = std::stoull(stringEndHeight);
+                
+              if (startHeight > endHeight) 
+              {
+                  throw(startHeight);
+              }        
+              return
+              {
                    startHeight, 
-                   endHeight = std::stoull(stringEndHeight)
-                };
+                   endHeight
+              };
+            }
+            catch(uint64_t startHeight) {
+                std::cout << WarningMsg("The end block height should be greater than the starting height you provided(") 
+                << WarningMsg(std::to_string(startHeight)) 
+                << WarningMsg(")");
             }
             catch (const std::out_of_range &)
             {
