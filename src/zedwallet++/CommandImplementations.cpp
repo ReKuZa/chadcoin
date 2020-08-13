@@ -355,7 +355,6 @@ void scanRange(const std::shared_ptr<WalletBackend> walletBackend)
         << WarningMsg(std::to_string(startHeight)) 
         << WarningMsg(")");
         endHeight = getHeight(endHeightMsg);
-        
     }
    
     std::cout << std::endl
