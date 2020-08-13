@@ -854,19 +854,10 @@ void WalletBackend::rewind(uint64_t scanHeight, uint64_t timestamp)
     });
 }
 
-void WalletBackend::scanRange(uint64_t scanHeight, uint64_t endScanHeight, uint64_t timestamp)
+void WalletBackend::scanRange(uint64_t scanHeight, uint64_t endScanHeight)
 {
-    m_syncRAIIWrapper->pauseSynchronizerToRunFunction([this, scanHeight, endScanHeight, timestamp]() mutable {
-        /* Though the wallet synchronizer can support both a timestamp and a
-           scanheight, we need a fixed scan height to cut transactions from.
-           Since a transaction in block 10 could have a timestamp before a
-           transaction in block 9, we can't rely on timestamps to reset accurately. */
-        if (timestamp != 0)
-        {
-            scanHeight = Utilities::timestampToScanHeight(timestamp);
-            timestamp = 0;
-        }
-
+    m_syncRAIIWrapper->pauseSynchronizerToRunFunction([this, scanHeight, endScanHeight]() mutable {
+    
         /* Empty the sync status and reset the start height */
         m_walletSynchronizer->rewind(scanHeight);
 

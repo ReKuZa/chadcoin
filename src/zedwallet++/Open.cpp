@@ -16,6 +16,7 @@
 #include <utilities/PasswordContainer.h>
 #include <utilities/String.h>
 #include <zedwallet++/CommandImplementations.h>
+#include <zedwallet++/GetInput.h>
 #include <zedwallet++/Utilities.h>
 
 std::shared_ptr<WalletBackend> importViewWallet(const ZedConfig &config)
@@ -65,7 +66,7 @@ std::shared_ptr<WalletBackend> importViewWallet(const ZedConfig &config)
 
     const std::string walletPass = getWalletPassword(verifyPassword, msg);
 
-    const uint64_t scanHeight = ZedUtilities::getScanHeight();
+    const uint64_t scanHeight = getHeight(getHeightMsg);
 
     auto [error, walletBackend] = WalletBackend::importViewWallet(
         privateViewKey,
@@ -110,7 +111,7 @@ std::shared_ptr<WalletBackend> importWalletFromKeys(const ZedConfig &config)
 
     const std::string walletPass = getWalletPassword(verifyPassword, msg);
 
-    const uint64_t scanHeight = ZedUtilities::getScanHeight();
+    const uint64_t scanHeight = getHeight(getHeightMsg);
 
     const auto [error, walletBackend] = WalletBackend::importWalletFromKeys(
         privateSpendKey,
@@ -170,7 +171,7 @@ std::shared_ptr<WalletBackend> importWalletFromSeed(const ZedConfig &config)
 
     const std::string walletPass = getWalletPassword(verifyPassword, msg);
 
-    const uint64_t scanHeight = ZedUtilities::getScanHeight();
+    const uint64_t scanHeight = getHeight(getHeightMsg);
 
     auto [error, walletBackend] = WalletBackend::importWalletFromSeed(
         mnemonicSeed, walletFileName, walletPass, scanHeight, config.host, config.port, config.ssl, config.threads);

@@ -156,27 +156,28 @@ void WalletSynchronizer::mainLoop()
             while (!m_processedBlocks.empty_unsafe() && !m_shouldStop)
             {
                 const auto [block, ourInputs, arrivalIndex] = m_processedBlocks.top_unsafe();
+
+                /* if endScanHeight is set, stop syncing at endScanHeight and start syncing from top of the chain */
+                if (m_endScanHeight && getCurrentScanHeight() >= m_endScanHeight)
+                {
+                    /* run stop wallet synchronizer stopSyncThread set to false*/
+                    stop(false);
+
+                    /* Redefine m_blockDownloader to start from TOP height */
+                    m_startTimestamp = 0;
+                    m_blockDownloader =
+                        BlockDownloader(m_daemon, m_subWallets, m_daemon->networkBlockCount(), m_startTimestamp);
+
+                    /* Start wallet synchronizer but with startSyncThread set to false*/
+                    start(false);
+
+                    m_endScanHeight = std::nullopt;
+                    break;
+                }
+
                 completeBlockProcessing(block, ourInputs);
                 m_processedBlocks.pop_unsafe();
             }
-        }
-
-
-        /* if endScanHeight is set, stop syncing at endScanHeight and start syncing from top of the chain */
-        if (m_endScanHeight && getCurrentScanHeight() >= m_endScanHeight)
-        {
-            /* run stop wallet synchronizer stopSyncThread set to false*/
-            stop(false);
-
-            /* Redefine m_blockDownloader to start from TOP height */
-            m_startTimestamp = 0;
-            m_blockDownloader =
-                BlockDownloader(m_daemon, m_subWallets, m_daemon->networkBlockCount(), m_startTimestamp);
-
-            /* Start wallet synchronizer but with startSyncThread set to false*/
-            start(false);
-
-            m_endScanHeight = std::nullopt;
         }
 
         /* If we're synced, check any transactions that may be in the pool */

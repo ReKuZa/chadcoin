@@ -328,6 +328,44 @@ std::tuple<std::string, uint16_t, bool> getDaemonAddress()
     }
 }
 
+uint64_t getHeight(const std::string msg)
+{
+    std::cout << "\n";
+
+    while (true)
+    {   
+
+        std::cout << InformationMsg(msg);
+
+        std::string stringHeight;
+
+        std::getline(std::cin, stringHeight);
+
+        /* Remove commas so user can enter height as e.g. 200,000 */
+        Utilities::removeCharFromString(stringHeight, ',');
+
+        if (stringHeight == "")
+        {
+            return 0;
+        }
+
+        try
+        {
+            return std::stoull(stringHeight);
+        }
+        catch (const std::out_of_range &)
+        {
+            std::cout << WarningMsg("Input is too large or too small!");
+        }
+        catch (const std::invalid_argument &)
+        {
+            std::cout << WarningMsg("Failed to parse height - input is not ") << WarningMsg("a number!")
+                      << std::endl
+                      << std::endl;
+        }
+    }
+}
+
 /* Template instantations that we are going to use - this allows us to have
    the template implementation in the .cpp file. */
 template std::string getInput(const std::vector<Command> &availableCommands, std::string prompt);
