@@ -61,7 +61,8 @@ void printPrivateKeys(const std::shared_ptr<WalletBackend> walletBackend)
 
     const auto [error, mnemonicSeed] = walletBackend->getMnemonicSeed();
 
-    /* If this isn't a view only wallet, print out the spend key and mnemonic if available */
+    /* If this isn't a view only wallet, print out the spend key and mnemonic if
+     * available */
     if (!walletBackend->isViewWallet())
     {
         std::cout << SuccessMsg("\nPrivate spend key:\n") << SuccessMsg(privateSpendKey) << "\n";
@@ -265,9 +266,12 @@ void status(const std::shared_ptr<WalletBackend> walletBackend)
 }
 
 void reset(const std::shared_ptr<WalletBackend> walletBackend)
-{   
-
-    const std::string msg = "What height would you like to begin scanning your wallet from?\n\nThis can greatly speed up the initial wallet scanning process.\n\nIf you do not know the exact height, err on the side of caution so transactions do not get missed.\n\nHit enter for the sub-optimal default of zero: ";
+{
+    const std::string msg = "What height would you like to begin scanning your wallet from?\n\n"
+                            "This can greatly speed up the initial wallet scanning process.\n\n"
+                            "If you do not know the exact height, err on the side of caution so "
+                            "transactions do not get missed.\n\n"
+                            "Hit enter for the sub-optimal default of zero: ";
 
     const uint64_t scanHeight = getHeight(msg);
 
@@ -300,11 +304,14 @@ void reset(const std::shared_ptr<WalletBackend> walletBackend)
 
 void rewind(const std::shared_ptr<WalletBackend> walletBackend)
 {
-
     const WalletTypes::WalletStatus status = walletBackend->getStatus();
     const uint64_t defaultRewindHeight = status.walletBlockCount < 1000 ? 0 : status.walletBlockCount - 1000;
 
-    const std::string msg = "What block height do you want to rewind your wallet to?\n\nAll blocks after this height will be rescanned, use this command if you suspect a transaction has been missed by the sync process.\n\nHit enter for the default of " + std::to_string(defaultRewindHeight) + " (1000 blocks ago): ";
+    const std::string msg = "What block height do you want to rewind your wallet to?\n\n"
+                            "All blocks after this height will be rescanned, use this command if you "
+                            "suspect a transaction has been missed by the sync process.\n\n"
+                            "Hit enter for the default of "
+                            + std::to_string(defaultRewindHeight) + " (1000 blocks ago): ";
 
     const uint64_t scanHeight = getHeight(msg);
 
@@ -337,26 +344,30 @@ void rewind(const std::shared_ptr<WalletBackend> walletBackend)
 
 void scanRange(const std::shared_ptr<WalletBackend> walletBackend)
 {
+    const std::string startHeightMsg = "What height would you like to begin scanning your wallet from?\n\n"
+                                       "This can greatly speed up the initial wallet scanning process.\n\n"
+                                       "If you do not know the exact height, err on the side of caution so "
+                                       "transactions do not get missed.\n\n"
+                                       "Hit enter for the sub-optimal default of zero:";
 
-    const std::string startHeightMsg = "What height would you like to begin scanning your wallet from?\n\nThis can greatly speed up the initial wallet scanning process.\n\nIf you do not know the exact height, err on the side of caution so transactions do not get missed.\n\nHit enter for the sub-optimal default of zero:" ;
     const uint64_t startHeight = getHeight(startHeightMsg);
 
+    std::string defaultEndHeight = std::to_string(startHeight + 1000);
 
-    std::string defaultEndHeight;
-    defaultEndHeight = std::to_string(startHeight + 1000);
-
-    const std::string endHeightMsg = "What height would you like to end scanning your wallet from?\n\nHit enter for the default of " + defaultEndHeight + ": ";
+    const std::string endHeightMsg = "What height would you like to end scanning your wallet from?\n\nHit "
+                                     "enter for the default of "
+                                     + defaultEndHeight + ": ";
 
     uint64_t endHeight = getHeight(endHeightMsg);
 
-    while(startHeight > endHeight)
+    while (startHeight > endHeight)
     {
-        std::cout << WarningMsg("The end block height should be greater than the starting height you provided(") 
-        << WarningMsg(std::to_string(startHeight)) 
-        << WarningMsg(")");
+        std::cout << WarningMsg("The end block height should be greater than the starting "
+                                "height you provided(")
+                  << WarningMsg(std::to_string(startHeight)) << WarningMsg(")");
         endHeight = getHeight(endHeightMsg);
     }
-   
+
     std::cout << std::endl
               << InformationMsg("This process may take some time to complete.") << std::endl
               << InformationMsg("You can't make any transactions during the ") << InformationMsg("process.")
