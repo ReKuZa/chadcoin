@@ -366,6 +366,17 @@ uint64_t getHeight(const std::string msg)
     }
 }
 
+uint64_t getHeight()
+{
+    const std::string msg =
+    "What height would you like to begin scanning your wallet from?\n\n"
+    "This can greatly speed up the initial wallet scanning process.\n\n"
+    "If you do not know the exact height, err on the side of caution so transactions do not get missed.\n\n"
+    "Hit enter for the sub-optimal default of zero: ";
+
+    return getHeight(msg);
+}
+
 /* Template instantations that we are going to use - this allows us to have
    the template implementation in the .cpp file. */
 template std::string getInput(const std::vector<Command> &availableCommands, std::string prompt);

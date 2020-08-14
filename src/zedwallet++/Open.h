@@ -28,9 +28,3 @@ std::string getWalletPassword(const bool verifyPwd, const std::string msg);
 void viewWalletMsg();
 
 void promptSaveKeys(const std::shared_ptr<WalletBackend> walletBackend);
-
-const std::string getHeightMsg =
-    "What height would you like to begin scanning your wallet from?\n\n"
-    "This can greatly speed up the initial wallet scanning process.\n\n"
-    "If you do not know the exact height, err on the side of caution so transactions do not get missed.\n\n"
-    "Hit enter for the sub-optimal default of zero: ";
