@@ -83,7 +83,7 @@ ApiConfig parseArguments(int argc, char **argv)
          "Specify the <password> to access the RPC server.",
          cxxopts::value<std::string>(config.rpcPassword),
          "<password>");
-    // clang-format off
+    // clang-format on
         
     try
     {
