@@ -552,12 +552,12 @@ std::tuple<bool, std::unordered_map<Crypto::Hash, std::vector<uint64_t>>>
 {
     Logger::logger.log(
         "Sending /indexes/" + std::to_string(startHeight) + "/" + std::to_string(endHeight) +
-            "request to daemon",
+            " request to daemon",
         Logger::TRACE,
         {Logger::SYNC, Logger::DAEMON});
 
     auto res = m_nodeClient->Get(
-        "/indexes" + std::to_string(startHeight) + "/" + std::to_string(endHeight),
+        "/indexes/" + std::to_string(startHeight) + "/" + std::to_string(endHeight),
         m_requestHeaders);
 
     std::unordered_map<Crypto::Hash, std::vector<uint64_t>> result;
@@ -568,7 +568,7 @@ std::tuple<bool, std::unordered_map<Crypto::Hash, std::vector<uint64_t>>>
 
     if (body)
     {
-        if (hasMember(body.value(), "error"))
+        if (body->IsObject() && hasMember(body.value(), "error"))
         {
             success = false;
         }
