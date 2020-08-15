@@ -348,18 +348,22 @@ void scanRange(const std::shared_ptr<WalletBackend> walletBackend)
                                        "This can greatly speed up the initial wallet scanning process.\n\n"
                                        "If you do not know the exact height, err on the side of caution so "
                                        "transactions do not get missed.\n\n"
-                                       "Hit enter for the sub-optimal default of zero:";
+                                       "Hit enter for the sub-optimal default of zero: ";
 
     const uint64_t startHeight = getHeight(startHeightMsg);
 
     std::string defaultEndHeight = std::to_string(startHeight + 1000);
 
-    const std::string endHeightMsg = "What height would you like to end scanning your wallet from?\n\nHit "
+    const std::string endHeightMsg = "What height would you like to stop scanning your wallet at?\n\nHit "
                                      "enter for the default of "
                                      + defaultEndHeight + ": ";
 
     uint64_t endHeight = getHeight(endHeightMsg);
 
+    if (endHeight == 0) {
+        endHeight = startHeight + 1000;
+    }
+    
     while (startHeight > endHeight)
     {
         std::cout << WarningMsg("The end block height should be greater than the starting "
