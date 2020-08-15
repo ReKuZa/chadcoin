@@ -129,7 +129,7 @@ class Nigel
             return std::nullopt;
         }
 
-        if (hasMember(jsonBody, "error"))
+        if (jsonBody.IsObject() && hasMember(jsonBody, "error"))
         {
             const auto error = getObjectFromJSON(jsonBody, "error");
 
