@@ -857,7 +857,6 @@ void WalletBackend::rewind(uint64_t scanHeight, uint64_t timestamp)
 void WalletBackend::scanRange(uint64_t scanHeight, uint64_t endScanHeight)
 {
     m_syncRAIIWrapper->pauseSynchronizerToRunFunction([this, scanHeight, endScanHeight]() mutable {
-    
         /* Empty the sync status and reset the start height */
         m_walletSynchronizer->rewind(scanHeight);
 

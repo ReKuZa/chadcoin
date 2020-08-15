@@ -333,8 +333,7 @@ uint64_t getHeight(const std::string msg)
     std::cout << "\n";
 
     while (true)
-    {   
-
+    {
         std::cout << InformationMsg(msg);
 
         std::string stringHeight;
@@ -359,8 +358,7 @@ uint64_t getHeight(const std::string msg)
         }
         catch (const std::invalid_argument &)
         {
-            std::cout << WarningMsg("Failed to parse height - input is not ") << WarningMsg("a number!")
-                      << std::endl
+            std::cout << WarningMsg("Failed to parse height - input is not ") << WarningMsg("a number!") << std::endl
                       << std::endl;
         }
     }
@@ -369,10 +367,10 @@ uint64_t getHeight(const std::string msg)
 uint64_t getHeight()
 {
     const std::string msg =
-    "What height would you like to begin scanning your wallet from?\n\n"
-    "This can greatly speed up the initial wallet scanning process.\n\n"
-    "If you do not know the exact height, err on the side of caution so transactions do not get missed.\n\n"
-    "Hit enter for the sub-optimal default of zero: ";
+        "What height would you like to begin scanning your wallet from?\n\n"
+        "This can greatly speed up the initial wallet scanning process.\n\n"
+        "If you do not know the exact height, err on the side of caution so transactions do not get missed.\n\n"
+        "Hit enter for the sub-optimal default of zero: ";
 
     return getHeight(msg);
 }
