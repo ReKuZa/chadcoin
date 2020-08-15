@@ -86,13 +86,10 @@ async function getFiles(directory) {
 
 async function formatFile(filePath) {
     try {
-
-        if (filePath === "src/common/StringTools.cpp") {
-            console.log(`Didn't format ${filePath}`)
-        } else {
-            console.log(`Formatting ${filePath}`);
-            await exec(`${binaryName} -i ${filePath}`);
-        }    
+        
+        console.log(`Formatting ${filePath}`);
+        await exec(`${binaryName} -i ${filePath}`);
+        
     } catch (err) {
         console.log(`Error formatting ${filePath}: ${err}`);
     }
