@@ -35,6 +35,12 @@ namespace Utilities
         return parsed.extraData;
     }
 
+    std::vector<uint8_t> getPoolNonceFromExtra(const std::vector<uint8_t> &extra)
+    {
+        const ParsedExtra parsed = parseExtra(extra);
+        return parsed.poolNonce;
+    }
+
     ParsedExtra parseExtra(const std::vector<uint8_t> &extra)
     {
         ParsedExtra parsed {Constants::NULL_PUBLIC_KEY, std::string(), {0, Constants::NULL_HASH}};
@@ -47,6 +53,7 @@ namespace Utilities
         bool seenRecipientPublicViewKey = false;
         bool seenRecipientPublicSpendKey = false;
         bool seenTransactionPrivateKey = false;
+        bool seenPoolNonce = false;
 
         for (auto it = extra.begin(); it < extra.end(); it++)
         {
@@ -57,7 +64,8 @@ namespace Utilities
              && seenExtraData
              && seenRecipientPublicViewKey
              && seenRecipientPublicSpendKey
-             && seenTransactionPrivateKey)
+             && seenTransactionPrivateKey
+             && seenPoolNonce)
             {
                 break;
             }
@@ -251,6 +259,30 @@ namespace Utilities
 
                 /* And continue parsing. */
                 continue;
+            }
+
+            if (c == Constants::TX_EXTRA_POOL_NONCE && elementsRemaining > 1 && !seenPoolNonce)
+            {
+                /* Get the length of the following data in the field */
+                size_t nonceSize = 0;
+
+                const size_t readNonceSize = Tools::read_varint(it + 1, extra.end(), nonceSize);
+
+                if (elementsRemaining > readNonceSize + nonceSize)
+                {
+                    /* Copy the data into the parsed extraData field */
+                    std::copy(it + 1 + readNonceSize, it + 1 + readNonceSize + nonceSize, std::back_inserter(parsed.poolNonce));
+
+                    seenPoolNonce = true;
+
+                    /* Advance past the mm tag by length field (readDataSize) + */
+                    it += readNonceSize + nonceSize;
+
+                    seenPoolNonce = true;
+
+                    /* Can continue parsing */
+                    continue;
+                }
             }
         }
 
