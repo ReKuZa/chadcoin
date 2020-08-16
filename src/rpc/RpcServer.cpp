@@ -2000,7 +2000,7 @@ std::tuple<Error, uint16_t>
     }
     catch (const std::exception &)
     {
-        return {SUCCESS, 404};
+        return {Error(API_HASH_NOT_FOUND), 404};
     }
 }
 
