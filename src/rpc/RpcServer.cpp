@@ -1027,22 +1027,25 @@ std::tuple<Error, uint16_t>
 
     std::vector<uint8_t> blockBlob = CryptoNote::toBinaryArray(blockTemplate);
 
-    const auto transactionPublicKey = Utilities::getTransactionPublicKeyFromExtra(blockTemplate.baseTransaction.extra);
+    const auto transactionPrivateKey = Utilities::getTransactionPrivateKeyFromExtra(
+        blockTemplate.baseTransaction.extra
+    );
 
     uint64_t reservedOffset = 0;
 
     if (reserveSize > 0)
     {
-        /* Find where in the block blob the transaction public key is */
+        /* Find where in the block blob the transaction private key is */
         const auto it = std::search(
             blockBlob.begin(),
             blockBlob.end(),
-            std::begin(transactionPublicKey.data),
-            std::end(transactionPublicKey.data));
+            std::begin(transactionPrivateKey.data),
+            std::end(transactionPrivateKey.data)
+        );
 
         /* The reserved offset is past the transactionPublicKey, then past
          * the extra nonce tags */
-        reservedOffset = (it - blockBlob.begin()) + sizeof(transactionPublicKey) + 2;
+        reservedOffset = (it - blockBlob.begin()) + sizeof(transactionPrivateKey) + 2;
 
         if (reservedOffset + reserveSize > blockBlob.size())
         {

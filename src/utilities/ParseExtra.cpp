@@ -35,6 +35,24 @@ namespace Utilities
         return parsed.extraData;
     }
 
+    Crypto::SecretKey getTransactionPrivateKeyFromExtra(const std::vector<uint8_t> &extra)
+    {
+        const ParsedExtra parsed = parseExtra(extra);
+        return parsed.transactionPrivateKey;
+    }
+
+    Crypto::PublicKey getRecipientPublicSpendKey(const std::vector<uint8_t> &extra)
+    {
+        const ParsedExtra parsed = parseExtra(extra);
+        return parsed.recipientPublicSpendKey;
+    }
+
+    Crypto::PublicKey getRecipientPublicViewKey(const std::vector<uint8_t> &extra)
+    {
+        const ParsedExtra parsed = parseExtra(extra);
+        return parsed.recipientPublicViewKey;
+    }
+
     std::vector<uint8_t> getPoolNonceFromExtra(const std::vector<uint8_t> &extra)
     {
         const ParsedExtra parsed = parseExtra(extra);

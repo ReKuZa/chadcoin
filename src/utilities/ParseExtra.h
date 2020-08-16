@@ -34,6 +34,12 @@ namespace Utilities
 
     Crypto::PublicKey getTransactionPublicKeyFromExtra(const std::vector<uint8_t> &extra);
 
+    Crypto::SecretKey getTransactionPrivateKeyFromExtra(const std::vector<uint8_t> &extra);
+
+    Crypto::PublicKey getRecipientPublicSpendKey(const std::vector<uint8_t> &extra);
+
+    Crypto::PublicKey getRecipientPublicViewKey(const std::vector<uint8_t> &extra);
+
     MergedMiningTag getMergedMiningTagFromExtra(const std::vector<uint8_t> &extra);
 
     std::vector<uint8_t> getExtraDataFromExtra(const std::vector<uint8_t> &extra);
