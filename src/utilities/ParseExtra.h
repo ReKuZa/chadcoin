@@ -22,6 +22,7 @@ namespace Utilities
         std::string paymentID;
         MergedMiningTag mergedMiningTag;
         std::vector<uint8_t> extraData;
+        std::vector<uint8_t> poolNonce;
 
         /* Coinbase transaction only */
         Crypto::PublicKey recipientPublicViewKey;
@@ -36,6 +37,8 @@ namespace Utilities
     MergedMiningTag getMergedMiningTagFromExtra(const std::vector<uint8_t> &extra);
 
     std::vector<uint8_t> getExtraDataFromExtra(const std::vector<uint8_t> &extra);
+
+    std::vector<uint8_t> getPoolNonceFromExtra(const std::vector<uint8_t> &extra);
 
     ParsedExtra parseExtra(const std::vector<uint8_t> &extra);
 } // namespace Utilities
