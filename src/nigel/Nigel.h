@@ -6,9 +6,9 @@
 
 #include "WalletTypes.h"
 #include "httplib.h"
+#include "rapidjson/document.h"
 #include "rapidjson/stringbuffer.h"
 #include "rapidjson/writer.h"
-#include "rapidjson/document.h"
 
 #include <atomic>
 #include <config/CryptoNoteConfig.h>
@@ -96,19 +96,15 @@ class Nigel
 
     bool getFeeInfo();
 
-    std::optional<rapidjson::Document> getJsonBody(
-        const std::shared_ptr<httplib::Response> &res,
-        const std::string &failMessage) const
+    std::optional<rapidjson::Document>
+        getJsonBody(const std::shared_ptr<httplib::Response> &res, const std::string &failMessage) const
     {
         rapidjson::Document jsonBody;
 
         if (!res)
         {
             Logger::logger.log(
-                failMessage + " - failed to open socket or timed out.",
-                Logger::INFO,
-                { Logger::SYNC, Logger::DAEMON }
-            );
+                failMessage + " - failed to open socket or timed out.", Logger::INFO, {Logger::SYNC, Logger::DAEMON});
 
             return std::nullopt;
         }
@@ -120,11 +116,7 @@ class Nigel
 
         if (jsonBody.Parse(res->body.c_str()).HasParseError())
         {
-            Logger::logger.log(
-                failMessage + ": " + res->body,
-                Logger::INFO,
-                { Logger::SYNC, Logger::DAEMON }
-            );
+            Logger::logger.log(failMessage + ": " + res->body, Logger::INFO, {Logger::SYNC, Logger::DAEMON});
 
             return std::nullopt;
         }
@@ -135,11 +127,7 @@ class Nigel
 
             const auto message = getStringFromJSON(error, "message");
 
-            Logger::logger.log(
-                message,
-                Logger::INFO,
-                { Logger::SYNC, Logger::DAEMON }
-            );
+            Logger::logger.log(message, Logger::INFO, {Logger::SYNC, Logger::DAEMON});
         }
         else
         {

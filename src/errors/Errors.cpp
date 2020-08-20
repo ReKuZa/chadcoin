@@ -355,7 +355,7 @@ std::string Error::getErrorMessage() const
         {
             return "The requested hash could not be found.";
         }
-        /* No default case so the compiler warns us if we missed one */
+            /* No default case so the compiler warns us if we missed one */
     }
 
     throw std::invalid_argument("Invalid error code given");

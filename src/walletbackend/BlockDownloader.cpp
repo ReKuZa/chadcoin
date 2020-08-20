@@ -20,10 +20,7 @@ BlockDownloader::BlockDownloader(
     const uint64_t startHeight,
     const uint64_t startTimestamp):
 
-    m_daemon(daemon),
-    m_subWallets(subWallets),
-    m_startHeight(startHeight),
-    m_startTimestamp(startTimestamp)
+    m_daemon(daemon), m_subWallets(subWallets), m_startHeight(startHeight), m_startTimestamp(startTimestamp)
 {
 }
 

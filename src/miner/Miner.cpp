@@ -20,9 +20,7 @@
 namespace CryptoNote
 {
     Miner::Miner(System::Dispatcher &dispatcher):
-        m_dispatcher(dispatcher),
-        m_miningStopped(dispatcher),
-        m_state(MiningState::MINING_STOPPED)
+        m_dispatcher(dispatcher), m_miningStopped(dispatcher), m_state(MiningState::MINING_STOPPED)
     {
     }
 

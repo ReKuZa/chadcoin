@@ -11,8 +11,7 @@ class TransactionMonitor
 {
   public:
     TransactionMonitor(const std::shared_ptr<WalletBackend> walletBackend):
-        m_walletBackend(walletBackend),
-        m_shouldStop(false)
+        m_walletBackend(walletBackend), m_shouldStop(false)
     {
     }
 

@@ -133,8 +133,7 @@ class WalletBackend
     bool removePreparedTransaction(const Crypto::Hash &transactionHash);
 
     /* Sends a previously prepared transaction to the network */
-    std::tuple<Error, Crypto::Hash> sendPreparedTransaction(
-        const Crypto::Hash transactionHash);
+    std::tuple<Error, Crypto::Hash> sendPreparedTransaction(const Crypto::Hash transactionHash);
 
     /* Send a transaction of amount to destination with paymentID */
     std::tuple<Error, Crypto::Hash, WalletTypes::PreparedTransactionInfo> sendTransactionBasic(
@@ -194,9 +193,12 @@ class WalletBackend
 
     /* Scan the blockchain, starting from scanHeight / timestamp */
     void reset(uint64_t scanHeight, uint64_t timestamp);
-    
+
     /* Rewind the blockchain, starting from scanHeight / timestamp */
     void rewind(uint64_t scanHeight, uint64_t timestamp);
+
+    /* Scan the blockchain, starting from scanHeight / timestamp and end at endHeight */
+    void scanRange(uint64_t scanHeight, uint64_t endScanHeight);
 
     /* Is the wallet a view only wallet */
     bool isViewWallet() const;

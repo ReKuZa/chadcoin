@@ -6,8 +6,8 @@
 #include <walletapi/ApiDispatcher.h>
 ////////////////////////////////////
 
-#include <config/CryptoNoteConfig.h>
 #include <common/StringTools.h>
+#include <config/CryptoNoteConfig.h>
 #include <crypto/random.h>
 #include <cryptonotecore/Mixins.h>
 #include <cryptopp/modes.h>
@@ -26,10 +26,7 @@ ApiDispatcher::ApiDispatcher(
     const std::string rpcPassword,
     const std::string corsHeader,
     unsigned int walletSyncThreads):
-    m_port(bindPort),
-    m_host(rpcBindIp),
-    m_corsHeader(corsHeader),
-    m_rpcPassword(rpcPassword)
+    m_port(bindPort), m_host(rpcBindIp), m_corsHeader(corsHeader), m_rpcPassword(rpcPassword)
 {
     if (walletSyncThreads == 0)
     {
@@ -48,7 +45,11 @@ ApiDispatcher::ApiDispatcher(
 
     /* Route the request through our middleware function, before forwarding
        to the specified function */
-    const auto router = [this](const auto function, const WalletState walletState, const bool viewWalletPermitted, const bool isBodyRequired) {
+    const auto router = [this](
+                            const auto function,
+                            const WalletState walletState,
+                            const bool viewWalletPermitted,
+                            const bool isBodyRequired) {
         return [=](const httplib::Request &req, httplib::Response &res) {
             /* Pass the inputted function with the arguments passed through
                to middleware */
@@ -75,31 +76,49 @@ ApiDispatcher::ApiDispatcher(
         .Post("/wallet/open", router(&ApiDispatcher::openWallet, WalletMustBeClosed, viewWalletsAllowed, bodyRequired))
 
         /* Import wallet with keys */
-        .Post("/wallet/import/key", router(&ApiDispatcher::keyImportWallet, WalletMustBeClosed, viewWalletsAllowed, bodyRequired))
+        .Post(
+            "/wallet/import/key",
+            router(&ApiDispatcher::keyImportWallet, WalletMustBeClosed, viewWalletsAllowed, bodyRequired))
 
         /* Import wallet with seed */
-        .Post("/wallet/import/seed", router(&ApiDispatcher::seedImportWallet, WalletMustBeClosed, viewWalletsAllowed, bodyRequired))
+        .Post(
+            "/wallet/import/seed",
+            router(&ApiDispatcher::seedImportWallet, WalletMustBeClosed, viewWalletsAllowed, bodyRequired))
 
         /* Import view wallet */
-        .Post("/wallet/import/view", router(&ApiDispatcher::importViewWallet, WalletMustBeClosed, viewWalletsAllowed, bodyRequired))
+        .Post(
+            "/wallet/import/view",
+            router(&ApiDispatcher::importViewWallet, WalletMustBeClosed, viewWalletsAllowed, bodyRequired))
 
         /* Create wallet */
-        .Post("/wallet/create", router(&ApiDispatcher::createWallet, WalletMustBeClosed, viewWalletsAllowed, bodyRequired))
+        .Post(
+            "/wallet/create",
+            router(&ApiDispatcher::createWallet, WalletMustBeClosed, viewWalletsAllowed, bodyRequired))
 
         /* Create a random address */
-        .Post("/addresses/create", router(&ApiDispatcher::createAddress, WalletMustBeOpen, viewWalletsBanned, bodyRequired))
+        .Post(
+            "/addresses/create",
+            router(&ApiDispatcher::createAddress, WalletMustBeOpen, viewWalletsBanned, bodyRequired))
 
         /* Import an address with a spend secret key */
-        .Post("/addresses/import", router(&ApiDispatcher::importAddress, WalletMustBeOpen, viewWalletsBanned, bodyRequired))
+        .Post(
+            "/addresses/import",
+            router(&ApiDispatcher::importAddress, WalletMustBeOpen, viewWalletsBanned, bodyRequired))
 
         /* Import a deterministic address using a wallet index */
-        .Post("/addresses/import/deterministic", router(&ApiDispatcher::importDeterministicAddress, WalletMustBeOpen, viewWalletsBanned, bodyRequired))
+        .Post(
+            "/addresses/import/deterministic",
+            router(&ApiDispatcher::importDeterministicAddress, WalletMustBeOpen, viewWalletsBanned, bodyRequired))
 
         /* Import a view only address with a public spend key */
-        .Post("/addresses/import/view", router(&ApiDispatcher::importViewAddress, WalletMustBeOpen, viewWalletsAllowed, bodyRequired))
+        .Post(
+            "/addresses/import/view",
+            router(&ApiDispatcher::importViewAddress, WalletMustBeOpen, viewWalletsAllowed, bodyRequired))
 
         /* Validate an address */
-        .Post("/addresses/validate", router(&ApiDispatcher::validateAddress, DoesntMatter, viewWalletsAllowed, bodyRequired))
+        .Post(
+            "/addresses/validate",
+            router(&ApiDispatcher::validateAddress, DoesntMatter, viewWalletsAllowed, bodyRequired))
 
         /* Send a previously prepared transaction */
         .Post(
@@ -136,9 +155,7 @@ ApiDispatcher::ApiDispatcher(
             "/transactions/send/fusion/advanced",
             router(&ApiDispatcher::sendAdvancedFusionTransaction, WalletMustBeOpen, viewWalletsBanned, bodyRequired))
 
-        .Post(
-            "/export/json",
-            router(&ApiDispatcher::exportToJSON, WalletMustBeOpen, viewWalletsAllowed, bodyRequired))
+        .Post("/export/json", router(&ApiDispatcher::exportToJSON, WalletMustBeOpen, viewWalletsAllowed, bodyRequired))
 
         /* DELETE */
 
@@ -194,7 +211,9 @@ ApiDispatcher::ApiDispatcher(
         .Get("/addresses", router(&ApiDispatcher::getAddresses, WalletMustBeOpen, viewWalletsAllowed, bodyNotRequired))
 
         /* Get the primary address */
-        .Get("/addresses/primary", router(&ApiDispatcher::getPrimaryAddress, WalletMustBeOpen, viewWalletsAllowed, bodyNotRequired))
+        .Get(
+            "/addresses/primary",
+            router(&ApiDispatcher::getPrimaryAddress, WalletMustBeOpen, viewWalletsAllowed, bodyNotRequired))
 
         /* Creates an integrated address from the given address and payment ID */
         .Get(
@@ -202,7 +221,9 @@ ApiDispatcher::ApiDispatcher(
             router(&ApiDispatcher::createIntegratedAddress, WalletMustBeOpen, viewWalletsAllowed, bodyNotRequired))
 
         /* Get all transactions */
-        .Get("/transactions", router(&ApiDispatcher::getTransactions, WalletMustBeOpen, viewWalletsAllowed, bodyNotRequired))
+        .Get(
+            "/transactions",
+            router(&ApiDispatcher::getTransactions, WalletMustBeOpen, viewWalletsAllowed, bodyNotRequired))
 
         /* Get all (outgoing) unconfirmed transactions */
         .Get(
@@ -212,7 +233,11 @@ ApiDispatcher::ApiDispatcher(
         /* Get all (outgoing) unconfirmed transactions, belonging to the given address */
         .Get(
             "/transactions/unconfirmed/" + ApiConstants::addressRegex,
-            router(&ApiDispatcher::getUnconfirmedTransactionsForAddress, WalletMustBeOpen, viewWalletsAllowed, bodyNotRequired))
+            router(
+                &ApiDispatcher::getUnconfirmedTransactionsForAddress,
+                WalletMustBeOpen,
+                viewWalletsAllowed,
+                bodyNotRequired))
 
         /* Get the transactions starting at the given block, for 1000 blocks */
         .Get(
@@ -222,18 +247,30 @@ ApiDispatcher::ApiDispatcher(
         /* Get the transactions starting at the given block, and ending at the given block */
         .Get(
             "/transactions/(\\d+)/(\\d+)",
-            router(&ApiDispatcher::getTransactionsFromHeightToHeight, WalletMustBeOpen, viewWalletsAllowed, bodyNotRequired))
+            router(
+                &ApiDispatcher::getTransactionsFromHeightToHeight,
+                WalletMustBeOpen,
+                viewWalletsAllowed,
+                bodyNotRequired))
 
         /* Get the transactions starting at the given block, for 1000 blocks, belonging to the given address */
         .Get(
-            "/transactions/address/" + ApiConstants::addressRegex+ "/(\\d+)",
-            router(&ApiDispatcher::getTransactionsFromHeightWithAddress, WalletMustBeOpen, viewWalletsAllowed, bodyNotRequired))
+            "/transactions/address/" + ApiConstants::addressRegex + "/(\\d+)",
+            router(
+                &ApiDispatcher::getTransactionsFromHeightWithAddress,
+                WalletMustBeOpen,
+                viewWalletsAllowed,
+                bodyNotRequired))
 
         /* Get the transactions starting at the given block, and ending at the given block, belonging to the given
            address */
         .Get(
             "/transactions/address/" + ApiConstants::addressRegex + "/(\\d+)" + "/(\\d+)",
-            router(&ApiDispatcher::getTransactionsFromHeightToHeightWithAddress, WalletMustBeOpen, viewWalletsAllowed, bodyNotRequired))
+            router(
+                &ApiDispatcher::getTransactionsFromHeightToHeightWithAddress,
+                WalletMustBeOpen,
+                viewWalletsAllowed,
+                bodyNotRequired))
 
         /* Get the transaction private key for the given hash */
         .Get(
@@ -290,7 +327,7 @@ void ApiDispatcher::stop()
 }
 
 std::optional<rapidjson::Document>
-ApiDispatcher::getJsonBody(const httplib::Request &req, httplib::Response &res, const bool bodyRequired)
+    ApiDispatcher::getJsonBody(const httplib::Request &req, httplib::Response &res, const bool bodyRequired)
 {
     rapidjson::Document jsonBody;
 
@@ -340,7 +377,10 @@ void ApiDispatcher::middleware(
     const WalletState walletState,
     const bool viewWalletPermitted,
     const bool bodyRequired,
-    std::function<std::tuple<Error, uint16_t>(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body)> handler)
+    std::function<std::tuple<Error, uint16_t>(
+        const httplib::Request &req,
+        httplib::Response &res,
+        const rapidjson::Document &body)> handler)
 {
     std::cout << "Incoming " << req.method << " request: " << req.path << std::endl;
 
@@ -384,8 +424,7 @@ void ApiDispatcher::middleware(
        a view wallet (wew!) */
     if (m_walletBackend != nullptr && !viewWalletPermitted && !assertIsNotViewWallet())
     {
-        failRequest(Error(ILLEGAL_VIEW_WALLET_OPERATION,
-                          "Operation cannot be completed on a view-only wallet."), res);
+        failRequest(Error(ILLEGAL_VIEW_WALLET_OPERATION, "Operation cannot be completed on a view-only wallet."), res);
 
         /* Bad request */
         res.status = 400;
@@ -439,9 +478,7 @@ void ApiDispatcher::middleware(
     }
 }
 
-void ApiDispatcher::failRequest(
-    const Error error,
-    httplib::Response &res)
+void ApiDispatcher::failRequest(const Error error, httplib::Response &res)
 {
     rapidjson::StringBuffer sb;
 
@@ -492,7 +529,8 @@ bool ApiDispatcher::checkAuthenticated(const httplib::Request &req, httplib::Res
 /* POST REQUESTS */
 ///////////////////
 
-std::tuple<Error, uint16_t> ApiDispatcher::openWallet(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body)
+std::tuple<Error, uint16_t>
+    ApiDispatcher::openWallet(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body)
 {
     std::scoped_lock lock(m_mutex);
 
@@ -544,8 +582,10 @@ std::tuple<Error, uint16_t>
     return {error, 200};
 }
 
-std::tuple<Error, uint16_t>
-    ApiDispatcher::seedImportWallet(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body)
+std::tuple<Error, uint16_t> ApiDispatcher::seedImportWallet(
+    const httplib::Request &req,
+    httplib::Response &res,
+    const rapidjson::Document &body)
 {
     std::scoped_lock lock(m_mutex);
 
@@ -568,8 +608,10 @@ std::tuple<Error, uint16_t>
     return {error, 200};
 }
 
-std::tuple<Error, uint16_t>
-    ApiDispatcher::importViewWallet(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body)
+std::tuple<Error, uint16_t> ApiDispatcher::importViewWallet(
+    const httplib::Request &req,
+    httplib::Response &res,
+    const rapidjson::Document &body)
 {
     std::scoped_lock lock(m_mutex);
 
@@ -604,7 +646,8 @@ std::tuple<Error, uint16_t>
     return {error, 200};
 }
 
-std::tuple<Error, uint16_t> ApiDispatcher::createWallet(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body)
+std::tuple<Error, uint16_t>
+    ApiDispatcher::createWallet(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body)
 {
     std::scoped_lock lock(m_mutex);
 
@@ -618,7 +661,8 @@ std::tuple<Error, uint16_t> ApiDispatcher::createWallet(const httplib::Request &
     return {error, 200};
 }
 
-std::tuple<Error, uint16_t> ApiDispatcher::createAddress(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body)
+std::tuple<Error, uint16_t>
+    ApiDispatcher::createAddress(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body)
 {
     const auto [error, address, privateSpendKey, subWalletIndex] = m_walletBackend->addSubWallet();
 
@@ -649,7 +693,8 @@ std::tuple<Error, uint16_t> ApiDispatcher::createAddress(const httplib::Request 
     return {SUCCESS, 201};
 }
 
-std::tuple<Error, uint16_t> ApiDispatcher::importAddress(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body)
+std::tuple<Error, uint16_t>
+    ApiDispatcher::importAddress(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body)
 {
     uint64_t scanHeight = 0;
 
@@ -687,7 +732,10 @@ std::tuple<Error, uint16_t> ApiDispatcher::importAddress(const httplib::Request 
     return {SUCCESS, 201};
 }
 
-std::tuple<Error, uint16_t> ApiDispatcher::importDeterministicAddress(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body)
+std::tuple<Error, uint16_t> ApiDispatcher::importDeterministicAddress(
+    const httplib::Request &req,
+    httplib::Response &res,
+    const rapidjson::Document &body)
 {
     uint64_t scanHeight = 0;
 
@@ -723,8 +771,10 @@ std::tuple<Error, uint16_t> ApiDispatcher::importDeterministicAddress(const http
     return {SUCCESS, 201};
 }
 
-std::tuple<Error, uint16_t>
-    ApiDispatcher::importViewAddress(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body)
+std::tuple<Error, uint16_t> ApiDispatcher::importViewAddress(
+    const httplib::Request &req,
+    httplib::Response &res,
+    const rapidjson::Document &body)
 {
     uint64_t scanHeight = 0;
 
@@ -815,8 +865,10 @@ std::tuple<Error, uint16_t>
     return {SUCCESS, 200};
 }
 
-std::tuple<Error, uint16_t>
-    ApiDispatcher::sendPreparedTransaction(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body)
+std::tuple<Error, uint16_t> ApiDispatcher::sendPreparedTransaction(
+    const httplib::Request &req,
+    httplib::Response &res,
+    const rapidjson::Document &body)
 {
     Crypto::Hash hash;
 
@@ -845,14 +897,18 @@ std::tuple<Error, uint16_t>
     return {SUCCESS, 201};
 }
 
-std::tuple<Error, uint16_t>
-    ApiDispatcher::prepareBasicTransaction(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body)
+std::tuple<Error, uint16_t> ApiDispatcher::prepareBasicTransaction(
+    const httplib::Request &req,
+    httplib::Response &res,
+    const rapidjson::Document &body)
 {
     return makeBasicTransaction(req, res, body, false);
 }
 
-std::tuple<Error, uint16_t>
-    ApiDispatcher::sendBasicTransaction(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body)
+std::tuple<Error, uint16_t> ApiDispatcher::sendBasicTransaction(
+    const httplib::Request &req,
+    httplib::Response &res,
+    const rapidjson::Document &body)
 {
     return makeBasicTransaction(req, res, body, true);
 }
@@ -879,8 +935,7 @@ std::tuple<Error, uint16_t> ApiDispatcher::makeBasicTransaction(
         amount,
         paymentID,
         false, /* Don't send all */
-        sendTransaction
-    );
+        sendTransaction);
 
     if (error)
     {
@@ -909,14 +964,18 @@ std::tuple<Error, uint16_t> ApiDispatcher::makeBasicTransaction(
     return {SUCCESS, 201};
 }
 
-std::tuple<Error, uint16_t>
-    ApiDispatcher::prepareAdvancedTransaction(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body)
+std::tuple<Error, uint16_t> ApiDispatcher::prepareAdvancedTransaction(
+    const httplib::Request &req,
+    httplib::Response &res,
+    const rapidjson::Document &body)
 {
     return makeAdvancedTransaction(req, res, body, false);
 }
 
-std::tuple<Error, uint16_t>
-    ApiDispatcher::sendAdvancedTransaction(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body)
+std::tuple<Error, uint16_t> ApiDispatcher::sendAdvancedTransaction(
+    const httplib::Request &req,
+    httplib::Response &res,
+    const rapidjson::Document &body)
 {
     return makeAdvancedTransaction(req, res, body, true);
 }
@@ -1015,8 +1074,7 @@ std::tuple<Error, uint16_t> ApiDispatcher::makeAdvancedTransaction(
         unlockTime,
         extraData,
         false, /* Don't send all */
-        sendTransaction
-    );
+        sendTransaction);
 
     if (error)
     {
@@ -1045,8 +1103,10 @@ std::tuple<Error, uint16_t> ApiDispatcher::makeAdvancedTransaction(
     return {SUCCESS, 201};
 }
 
-std::tuple<Error, uint16_t>
-    ApiDispatcher::sendBasicFusionTransaction(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body)
+std::tuple<Error, uint16_t> ApiDispatcher::sendBasicFusionTransaction(
+    const httplib::Request &req,
+    httplib::Response &res,
+    const rapidjson::Document &body)
 {
     auto [error, hash] = m_walletBackend->sendFusionTransactionBasic();
 
@@ -1071,8 +1131,10 @@ std::tuple<Error, uint16_t>
     return {SUCCESS, 201};
 }
 
-std::tuple<Error, uint16_t>
-    ApiDispatcher::sendAdvancedFusionTransaction(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body)
+std::tuple<Error, uint16_t> ApiDispatcher::sendAdvancedFusionTransaction(
+    const httplib::Request &req,
+    httplib::Response &res,
+    const rapidjson::Document &body)
 {
     std::string destination;
 
@@ -1128,12 +1190,7 @@ std::tuple<Error, uint16_t>
     }
 
     auto [error, hash] = m_walletBackend->sendFusionTransactionAdvanced(
-        mixin,
-        subWalletsToTakeFrom,
-        destination,
-        extraData,
-        optimizeTarget
-    );
+        mixin, subWalletsToTakeFrom, destination, extraData, optimizeTarget);
 
     if (error)
     {
@@ -1167,9 +1224,7 @@ std::tuple<Error, uint16_t>
     if (!file)
     {
         const Error error = Error(
-            INVALID_WALLET_FILENAME,
-            std::string("Could not create file at path given. Error: ") + strerror(errno)
-        );
+            INVALID_WALLET_FILENAME, std::string("Could not create file at path given. Error: ") + strerror(errno));
 
         return {error, 400};
     }
@@ -1183,7 +1238,8 @@ std::tuple<Error, uint16_t>
 /* DELETE REQUESTS */
 /////////////////////
 
-std::tuple<Error, uint16_t> ApiDispatcher::closeWallet(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body)
+std::tuple<Error, uint16_t>
+    ApiDispatcher::closeWallet(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body)
 {
     std::scoped_lock lock(m_mutex);
 
@@ -1192,7 +1248,8 @@ std::tuple<Error, uint16_t> ApiDispatcher::closeWallet(const httplib::Request &r
     return {SUCCESS, 200};
 }
 
-std::tuple<Error, uint16_t> ApiDispatcher::deleteAddress(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body)
+std::tuple<Error, uint16_t>
+    ApiDispatcher::deleteAddress(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body)
 {
     /* Remove the addresses prefix to get the address */
     std::string address = req.matches[1];
@@ -1212,7 +1269,10 @@ std::tuple<Error, uint16_t> ApiDispatcher::deleteAddress(const httplib::Request 
     return {SUCCESS, 200};
 }
 
-std::tuple<Error, uint16_t> ApiDispatcher::deletePreparedTransaction(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body)
+std::tuple<Error, uint16_t> ApiDispatcher::deletePreparedTransaction(
+    const httplib::Request &req,
+    httplib::Response &res,
+    const rapidjson::Document &body)
 {
     /* Remove the path prefix to get the hash */
     std::string hashStr = req.matches[1];
@@ -1237,8 +1297,10 @@ std::tuple<Error, uint16_t> ApiDispatcher::deletePreparedTransaction(const httpl
 /* PUT REQUESTS */
 //////////////////
 
-std::tuple<Error, uint16_t>
-    ApiDispatcher::saveWallet(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body) const
+std::tuple<Error, uint16_t> ApiDispatcher::saveWallet(
+    const httplib::Request &req,
+    httplib::Response &res,
+    const rapidjson::Document &body) const
 {
     std::scoped_lock lock(m_mutex);
 
@@ -1247,7 +1309,8 @@ std::tuple<Error, uint16_t>
     return {SUCCESS, 200};
 }
 
-std::tuple<Error, uint16_t> ApiDispatcher::resetWallet(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body)
+std::tuple<Error, uint16_t>
+    ApiDispatcher::resetWallet(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body)
 {
     std::scoped_lock lock(m_mutex);
 
@@ -1265,7 +1328,8 @@ std::tuple<Error, uint16_t> ApiDispatcher::resetWallet(const httplib::Request &r
     return {SUCCESS, 200};
 }
 
-std::tuple<Error, uint16_t> ApiDispatcher::rewindWallet(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body)
+std::tuple<Error, uint16_t>
+    ApiDispatcher::rewindWallet(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body)
 {
     std::scoped_lock lock(m_mutex);
 
@@ -1283,7 +1347,8 @@ std::tuple<Error, uint16_t> ApiDispatcher::rewindWallet(const httplib::Request &
     return {SUCCESS, 200};
 }
 
-std::tuple<Error, uint16_t> ApiDispatcher::setNodeInfo(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body)
+std::tuple<Error, uint16_t>
+    ApiDispatcher::setNodeInfo(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body)
 {
     std::scoped_lock lock(m_mutex);
 
@@ -1313,8 +1378,10 @@ std::tuple<Error, uint16_t> ApiDispatcher::setNodeInfo(const httplib::Request &r
 /* GET REQUESTS */
 //////////////////
 
-std::tuple<Error, uint16_t>
-    ApiDispatcher::getNodeInfo(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body) const
+std::tuple<Error, uint16_t> ApiDispatcher::getNodeInfo(
+    const httplib::Request &req,
+    httplib::Response &res,
+    const rapidjson::Document &body) const
 {
     const auto [daemonHost, daemonPort, daemonSSL] = m_walletBackend->getNodeAddress();
 
@@ -1348,8 +1415,10 @@ std::tuple<Error, uint16_t>
     return {SUCCESS, 200};
 }
 
-std::tuple<Error, uint16_t>
-    ApiDispatcher::getPrivateViewKey(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body) const
+std::tuple<Error, uint16_t> ApiDispatcher::getPrivateViewKey(
+    const httplib::Request &req,
+    httplib::Response &res,
+    const rapidjson::Document &body) const
 {
     rapidjson::StringBuffer sb;
 
@@ -1368,8 +1437,10 @@ std::tuple<Error, uint16_t>
 }
 
 /* Gets the spend keys for the given address */
-std::tuple<Error, uint16_t>
-    ApiDispatcher::getSpendKeys(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body) const
+std::tuple<Error, uint16_t> ApiDispatcher::getSpendKeys(
+    const httplib::Request &req,
+    httplib::Response &res,
+    const rapidjson::Document &body) const
 {
     /* Remove the keys prefix to get the address */
     std::string address = req.matches[1];
@@ -1409,8 +1480,10 @@ std::tuple<Error, uint16_t>
 }
 
 /* Gets the mnemonic seed for the given address (if possible) */
-std::tuple<Error, uint16_t>
-    ApiDispatcher::getMnemonicSeed(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body) const
+std::tuple<Error, uint16_t> ApiDispatcher::getMnemonicSeed(
+    const httplib::Request &req,
+    httplib::Response &res,
+    const rapidjson::Document &body) const
 {
     /* Remove the keys prefix to get the address */
     std::string address = req.matches[1];
@@ -1482,8 +1555,10 @@ std::tuple<Error, uint16_t>
     return {SUCCESS, 200};
 }
 
-std::tuple<Error, uint16_t>
-    ApiDispatcher::getAddresses(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body) const
+std::tuple<Error, uint16_t> ApiDispatcher::getAddresses(
+    const httplib::Request &req,
+    httplib::Response &res,
+    const rapidjson::Document &body) const
 {
     rapidjson::StringBuffer sb;
 
@@ -1494,7 +1569,7 @@ std::tuple<Error, uint16_t>
         writer.Key("addresses");
         writer.StartArray();
         {
-            for (const auto &address: m_walletBackend->getAddresses())
+            for (const auto &address : m_walletBackend->getAddresses())
             {
                 writer.String(address);
             }
@@ -1508,8 +1583,10 @@ std::tuple<Error, uint16_t>
     return {SUCCESS, 200};
 }
 
-std::tuple<Error, uint16_t>
-    ApiDispatcher::getPrimaryAddress(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body) const
+std::tuple<Error, uint16_t> ApiDispatcher::getPrimaryAddress(
+    const httplib::Request &req,
+    httplib::Response &res,
+    const rapidjson::Document &body) const
 {
     rapidjson::StringBuffer sb;
 
@@ -1527,10 +1604,11 @@ std::tuple<Error, uint16_t>
     return {SUCCESS, 200};
 }
 
-std::tuple<Error, uint16_t>
-    ApiDispatcher::createIntegratedAddress(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body) const
+std::tuple<Error, uint16_t> ApiDispatcher::createIntegratedAddress(
+    const httplib::Request &req,
+    httplib::Response &res,
+    const rapidjson::Document &body) const
 {
-  
     std::string address = req.matches[1];
 
     /* Skip the address */
@@ -1559,8 +1637,10 @@ std::tuple<Error, uint16_t>
     return {SUCCESS, 200};
 }
 
-std::tuple<Error, uint16_t>
-    ApiDispatcher::getTransactions(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body) const
+std::tuple<Error, uint16_t> ApiDispatcher::getTransactions(
+    const httplib::Request &req,
+    httplib::Response &res,
+    const rapidjson::Document &body) const
 {
     rapidjson::StringBuffer sb;
 
@@ -1585,8 +1665,10 @@ std::tuple<Error, uint16_t>
     return {SUCCESS, 200};
 }
 
-std::tuple<Error, uint16_t>
-    ApiDispatcher::getUnconfirmedTransactions(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body) const
+std::tuple<Error, uint16_t> ApiDispatcher::getUnconfirmedTransactions(
+    const httplib::Request &req,
+    httplib::Response &res,
+    const rapidjson::Document &body) const
 {
     rapidjson::StringBuffer sb;
 
@@ -1780,7 +1862,6 @@ std::tuple<Error, uint16_t> ApiDispatcher::getTransactionsFromHeightWithAddress(
     httplib::Response &res,
     const rapidjson::Document &body) const
 {
-
     std::string address = req.matches[1];
 
     if (Error error = validateAddresses({address}, false); error != SUCCESS)
@@ -1816,18 +1897,18 @@ std::tuple<Error, uint16_t> ApiDispatcher::getTransactionsFromHeightWithAddress(
     std::vector<WalletTypes::Transaction> result;
 
     std::copy_if(txs.begin(), txs.end(), std::back_inserter(result), [address, this](const auto tx) {
-      for (const auto [key, transfer] : tx.transfers)
-      {
-          const auto [error, actualAddress] = m_walletBackend->getAddress(key);
+        for (const auto [key, transfer] : tx.transfers)
+        {
+            const auto [error, actualAddress] = m_walletBackend->getAddress(key);
 
-          /* If the transfer contains our address, keep it, else skip */
-          if (actualAddress == address)
-          {
-              return true;
-          }
-      }
+            /* If the transfer contains our address, keep it, else skip */
+            if (actualAddress == address)
+            {
+                return true;
+            }
+        }
 
-      return false;
+        return false;
     });
 
     rapidjson::StringBuffer sb;
@@ -1858,7 +1939,6 @@ std::tuple<Error, uint16_t> ApiDispatcher::getTransactionsFromHeightToHeightWith
     httplib::Response &res,
     const rapidjson::Document &body) const
 {
-
     std::string address = req.matches[1];
 
     if (Error error = validateAddresses({address}, false); error != SUCCESS)
@@ -1906,18 +1986,18 @@ std::tuple<Error, uint16_t> ApiDispatcher::getTransactionsFromHeightToHeightWith
     std::vector<WalletTypes::Transaction> result;
 
     std::copy_if(txs.begin(), txs.end(), std::back_inserter(result), [address, this](const auto tx) {
-      for (const auto [key, transfer] : tx.transfers)
-      {
-          const auto [error, actualAddress] = m_walletBackend->getAddress(key);
+        for (const auto [key, transfer] : tx.transfers)
+        {
+            const auto [error, actualAddress] = m_walletBackend->getAddress(key);
 
-          /* If the transfer contains our address, keep it, else skip */
-          if (actualAddress == address)
-          {
-              return true;
-          }
-      }
+            /* If the transfer contains our address, keep it, else skip */
+            if (actualAddress == address)
+            {
+                return true;
+            }
+        }
 
-      return false;
+        return false;
     });
 
     rapidjson::StringBuffer sb;
@@ -2057,8 +2137,10 @@ std::tuple<Error, uint16_t> ApiDispatcher::getTransactionsWithPaymentId(
     return {SUCCESS, 200};
 }
 
-std::tuple<Error, uint16_t>
-    ApiDispatcher::getBalance(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body) const
+std::tuple<Error, uint16_t> ApiDispatcher::getBalance(
+    const httplib::Request &req,
+    httplib::Response &res,
+    const rapidjson::Document &body) const
 {
     const auto [unlocked, locked] = m_walletBackend->getTotalBalance();
 
@@ -2114,8 +2196,10 @@ std::tuple<Error, uint16_t> ApiDispatcher::getBalanceForAddress(
     return {SUCCESS, 200};
 }
 
-std::tuple<Error, uint16_t>
-    ApiDispatcher::getBalances(const httplib::Request &req, httplib::Response &res, const rapidjson::Document &body) const
+std::tuple<Error, uint16_t> ApiDispatcher::getBalances(
+    const httplib::Request &req,
+    httplib::Response &res,
+    const rapidjson::Document &body) const
 {
     const auto balances = m_walletBackend->getBalances();
 

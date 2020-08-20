@@ -53,10 +53,7 @@ Nigel::Nigel(
     const uint16_t daemonPort,
     const bool daemonSSL,
     const std::chrono::seconds timeout):
-    m_timeout(timeout),
-    m_daemonHost(daemonHost),
-    m_daemonPort(daemonPort),
-    m_daemonSSL(daemonSSL)
+    m_timeout(timeout), m_daemonHost(daemonHost), m_daemonPort(daemonPort), m_daemonSSL(daemonSSL)
 {
     std::stringstream userAgent;
     userAgent << "Nigel/" << PROJECT_VERSION_LONG;
@@ -149,8 +146,7 @@ std::tuple<bool, std::vector<WalletTypes::WalletBlockInfo>, std::optional<Wallet
 
     const std::string dump(sb.GetString(), sb.GetLength());
 
-    Logger::logger.log(
-        "Sending /sync/raw request to daemon: " + dump, Logger::TRACE, {Logger::SYNC, Logger::DAEMON});
+    Logger::logger.log("Sending /sync/raw request to daemon: " + dump, Logger::TRACE, {Logger::SYNC, Logger::DAEMON});
 
     const auto res = m_nodeClient->Post("/sync/raw", m_requestHeaders, sb.GetString(), "application/json");
 
@@ -198,7 +194,7 @@ std::tuple<bool, std::vector<WalletTypes::WalletBlockInfo>, std::optional<Wallet
 
             std::optional<WalletTypes::TopBlock> topBlock;
 
-            if (hasMember(body.value(),"synced") && hasMember(body.value(),"topBlock"))
+            if (hasMember(body.value(), "synced") && hasMember(body.value(), "topBlock"))
             {
                 if (getBoolFromJSON(body.value(), "synced"))
                 {
@@ -274,8 +270,7 @@ bool Nigel::getDaemonInfo()
             }
         }
 
-        if (hasMember(body.value(), "incomingConnections")
-            && hasMember(body.value(), "outgoingConnections"))
+        if (hasMember(body.value(), "incomingConnections") && hasMember(body.value(), "outgoingConnections"))
         {
             m_peerCount = getUint64FromJSON(body.value(), "incomingConnections")
                           + getUint64FromJSON(body.value(), "outgoingConnections");
@@ -559,7 +554,7 @@ std::tuple<bool, std::unordered_map<Crypto::Hash, std::vector<uint64_t>>>
     auto res = m_nodeClient->Get(
         "/indexes/" + std::to_string(startHeight) + "/" + std::to_string(endHeight),
         m_requestHeaders);
-
+  
     std::unordered_map<Crypto::Hash, std::vector<uint64_t>> result;
 
     const auto body = getJsonBody(res, "Failed to get global indexes for range");

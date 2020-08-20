@@ -8,8 +8,8 @@
 #include "rapidjson/writer.h"
 
 #include <CryptoNote.h>
-#include <errors/Errors.h>
 #include <JsonHelper.h>
+#include <errors/Errors.h>
 #include <numeric>
 #include <optional>
 #include <string>
@@ -104,7 +104,8 @@ namespace WalletTypes
             writer.EndObject();
         }
 
-        void fromJSON(const JSONValue &j) {
+        void fromJSON(const JSONValue &j)
+        {
             keyOutputs.clear();
 
             for (const auto &output : getArrayFromJSON(j, "outputs"))
@@ -179,7 +180,8 @@ namespace WalletTypes
             writer.EndObject();
         }
 
-        void fromJSON(const JSONValue &j) {
+        void fromJSON(const JSONValue &j)
+        {
             keyOutputs.clear();
 
             for (const auto &output : getArrayFromJSON(j, "outputs"))
@@ -441,9 +443,7 @@ namespace WalletTypes
             const TransactionInput input,
             const Crypto::PublicKey publicSpendKey,
             const Crypto::SecretKey privateSpendKey):
-            input(input),
-            publicSpendKey(publicSpendKey),
-            privateSpendKey(privateSpendKey)
+            input(input), publicSpendKey(publicSpendKey), privateSpendKey(privateSpendKey)
         {
         }
 
@@ -758,48 +758,48 @@ namespace WalletTypes
 
     class FeeType
     {
-        public:
-            /* Fee will be specified as fee per byte, for example, 1 atomic TRTL per byte. */
-            bool isFeePerByte = false;
+      public:
+        /* Fee will be specified as fee per byte, for example, 1 atomic TRTL per byte. */
+        bool isFeePerByte = false;
 
-            /* Fee for each byte, in atomic units. Allowed to be a double, since
-             * we will truncate it to an int upon performing the chunking. */
-            double feePerByte = 0;
+        /* Fee for each byte, in atomic units. Allowed to be a double, since
+         * we will truncate it to an int upon performing the chunking. */
+        double feePerByte = 0;
 
-            /* Fee will be specified as a fixed fee */
-            bool isFixedFee = false;
+        /* Fee will be specified as a fixed fee */
+        bool isFixedFee = false;
 
-            /* Total fee to use */
-            uint64_t fixedFee = 0;
+        /* Total fee to use */
+        uint64_t fixedFee = 0;
 
-            /* Fee will not be specified, use the minimum possible */
-            bool isMinimumFee = false;
+        /* Fee will not be specified, use the minimum possible */
+        bool isMinimumFee = false;
 
-            static FeeType MinimumFee()
-            {
-                FeeType fee;
-                fee.isMinimumFee = true;
-                return fee;
-            }
+        static FeeType MinimumFee()
+        {
+            FeeType fee;
+            fee.isMinimumFee = true;
+            return fee;
+        }
 
-            static FeeType FeePerByte(const double feePerByte)
-            {
-                FeeType fee;
-                fee.isFeePerByte = true;
-                fee.feePerByte = feePerByte;
-                return fee;
-            }
+        static FeeType FeePerByte(const double feePerByte)
+        {
+            FeeType fee;
+            fee.isFeePerByte = true;
+            fee.feePerByte = feePerByte;
+            return fee;
+        }
 
-            static FeeType FixedFee(const uint64_t fixedFee)
-            {
-                FeeType fee;
-                fee.isFixedFee = true;
-                fee.fixedFee = fixedFee;
-                return fee;
-            }
+        static FeeType FixedFee(const uint64_t fixedFee)
+        {
+            FeeType fee;
+            fee.isFixedFee = true;
+            fee.fixedFee = fixedFee;
+            return fee;
+        }
 
-        private:
-            FeeType() = default;
+      private:
+        FeeType() = default;
     };
 
     struct TransactionResult
@@ -904,4 +904,4 @@ namespace WalletTypes
             }
         }
     };
-}
+} // namespace WalletTypes

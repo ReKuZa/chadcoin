@@ -46,8 +46,7 @@ template<typename T> uint32_t getUintFromJSON(const T &j)
 {
     if (!j.IsUint())
     {
-        throw std::invalid_argument(
-            "JSON parameter is wrong type. Expected uint64_t, got " + kTypeNames[j.GetType()]);
+        throw std::invalid_argument("JSON parameter is wrong type. Expected uint64_t, got " + kTypeNames[j.GetType()]);
     }
 
     return j.GetUint();
@@ -68,8 +67,7 @@ template<typename T> double getDoubleFromJSON(const T &j)
 {
     if (!j.IsDouble())
     {
-        throw std::invalid_argument(
-            "JSON parameter is wrong type. Expected double, got " + kTypeNames[j.GetType()]);
+        throw std::invalid_argument("JSON parameter is wrong type. Expected double, got " + kTypeNames[j.GetType()]);
     }
 
     return j.GetDouble();
@@ -89,8 +87,7 @@ template<typename T> uint64_t getUint64FromJSON(const T &j)
 {
     if (!j.IsUint64())
     {
-        throw std::invalid_argument(
-            "JSON parameter is wrong type. Expected uint64_t, got " + kTypeNames[j.GetType()]);
+        throw std::invalid_argument("JSON parameter is wrong type. Expected uint64_t, got " + kTypeNames[j.GetType()]);
     }
 
     return j.GetUint64();
