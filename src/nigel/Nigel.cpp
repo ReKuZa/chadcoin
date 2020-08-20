@@ -546,13 +546,15 @@ std::tuple<bool, std::unordered_map<Crypto::Hash, std::vector<uint64_t>>>
     Nigel::getGlobalIndexesForRange(const uint64_t startHeight, const uint64_t endHeight) const
 {
     Logger::logger.log(
-        "Sending /indexes/" + std::to_string(startHeight) + "/" + std::to_string(endHeight) + "request to daemon",
+        "Sending /indexes/" + std::to_string(startHeight) + "/" + std::to_string(endHeight) +
+            " request to daemon",
         Logger::TRACE,
         {Logger::SYNC, Logger::DAEMON});
 
-    auto res =
-        m_nodeClient->Get("/indexes" + std::to_string(startHeight) + "/" + std::to_string(endHeight), m_requestHeaders);
-
+    auto res = m_nodeClient->Get(
+        "/indexes/" + std::to_string(startHeight) + "/" + std::to_string(endHeight),
+        m_requestHeaders);
+  
     std::unordered_map<Crypto::Hash, std::vector<uint64_t>> result;
 
     const auto body = getJsonBody(res, "Failed to get global indexes for range");
@@ -561,7 +563,7 @@ std::tuple<bool, std::unordered_map<Crypto::Hash, std::vector<uint64_t>>>
 
     if (body)
     {
-        if (hasMember(body.value(), "error"))
+        if (body->IsObject() && hasMember(body.value(), "error"))
         {
             success = false;
         }
