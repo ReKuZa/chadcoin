@@ -1339,7 +1339,7 @@ std::tuple<Error, uint16_t>
 
     if (hasMember(body, "scanHeight"))
     {
-        scanHeight = getUint64FromJSON(body, "scanHeight") < 1000 ? 0 : getUint64FromJSON(body, "scanHeight");
+        scanHeight = getUint64FromJSON(body, "scanHeight");
     }
 
     m_walletBackend->rewind(scanHeight, timestamp);
