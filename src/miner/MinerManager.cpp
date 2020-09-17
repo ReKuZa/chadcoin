@@ -219,7 +219,7 @@ namespace Miner
 
         auto res = m_httpClient->Post("/block", sb.GetString(), "application/json");
 
-        if (!res || res->status == 202)
+        if (res && res->status == 202)
         {
             std::cout << SuccessMsg("\nBlock found! Hash: ") << SuccessMsg(getBlockHash(minedBlock)) << "\n\n";
 
