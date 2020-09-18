@@ -78,7 +78,7 @@ RpcServer::RpcServer(
         };
 
     m_server
-        .Post("/block", router(&RpcServer::submitBlock, RpcMode::Default, bodyRequired, syncRequired))
+        .Post("/block", router(&RpcServer::submitBlock, RpcMode::Default, bodyRequired, syncNotRequired))
 
         .Get(
             "/block/" + m_hashRegex, /* /block/{hash} */
@@ -104,7 +104,7 @@ RpcServer::RpcServer(
 
         .Get("/block/last", router(&RpcServer::getLastBlockHeader, RpcMode::Default, bodyNotRequired, syncNotRequired))
 
-        .Post("/block/template", router(&RpcServer::getBlockTemplate, RpcMode::Default, bodyRequired, syncRequired))
+        .Post("/block/template", router(&RpcServer::getBlockTemplate, RpcMode::Default, bodyRequired, syncNotRequired))
 
         .Get("/fee", router(&RpcServer::fee, RpcMode::Default, bodyNotRequired, syncNotRequired))
 
