@@ -1,4 +1,4 @@
-// Copyright (c) 2018-2019, The TurtleCoin Developers
+// Copyright (c) 2018-2020, The TurtleCoin Developers
 //
 // Please see the included LICENSE file for more information.
 
@@ -14,9 +14,8 @@
 
 namespace SendTransaction
 {
-    std::tuple<Error, Crypto::Hash> sendFusionTransactionBasic(
-        const std::shared_ptr<Nigel> daemon,
-        const std::shared_ptr<SubWallets> subWallets);
+    std::tuple<Error, Crypto::Hash>
+        sendFusionTransactionBasic(const std::shared_ptr<Nigel> daemon, const std::shared_ptr<SubWallets> subWallets);
 
     std::tuple<Error, Crypto::Hash> sendFusionTransactionAdvanced(
         const uint64_t mixin,
@@ -77,9 +76,7 @@ namespace SendTransaction
         const std::vector<WalletTypes::ObscuredInput> inputsAndFakes,
         const std::vector<Crypto::SecretKey> tmpSecretKeys);
 
-    std::vector<uint64_t> splitAmountIntoDenominations(
-        const uint64_t amount,
-        const bool preventTooLargeOutputs = true);
+    std::vector<uint64_t> splitAmountIntoDenominations(const uint64_t amount, const bool preventTooLargeOutputs = true);
 
     std::vector<CryptoNote::TransactionInput>
         keyInputToTransactionInput(const std::vector<CryptoNote::KeyInput> keyInputs);
@@ -87,11 +84,11 @@ namespace SendTransaction
     std::vector<CryptoNote::TransactionOutput>
         keyOutputToTransactionOutput(const std::vector<WalletTypes::KeyOutput> keyOutputs);
 
-    std::tuple<Error, std::vector<CryptoNote::RandomOuts>> getRingParticipants(
+    std::tuple<Error, std::vector<WalletTypes::RandomOuts>> getRingParticipants(
         const uint64_t mixin,
         const std::shared_ptr<Nigel> daemon,
         const std::vector<WalletTypes::TxInputAndOwner> sources);
-    
+
     WalletTypes::TransactionResult makeTransaction(
         const uint64_t mixin,
         const std::shared_ptr<Nigel> daemon,

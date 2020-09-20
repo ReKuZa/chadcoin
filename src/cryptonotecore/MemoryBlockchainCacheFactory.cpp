@@ -10,8 +10,7 @@ namespace CryptoNote
     MemoryBlockchainCacheFactory::MemoryBlockchainCacheFactory(
         const std::string &filename,
         std::shared_ptr<Logging::ILogger> logger):
-        filename(filename),
-        logger(logger)
+        filename(filename), logger(logger)
     {
     }
 

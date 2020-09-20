@@ -10,9 +10,11 @@
 #include <crypto/hash.h>
 #include <cstddef>
 #include <cstdint>
+#include <functional>
 #include <initializer_list>
 #include <limits>
 #include <string>
+#include <unordered_map>
 
 namespace CryptoNote
 {
@@ -124,7 +126,7 @@ namespace CryptoNote
 
         const uint32_t MIXIN_LIMITS_V3_HEIGHT = 800000;
 
-        /* The mixin to use by default with zedwallet and turtle-service */
+        /* The mixin to use by default with wallet software */
         /* DEFAULT_MIXIN_V0 is the mixin used before MIXIN_LIMITS_V1_HEIGHT is started */
         const uint64_t DEFAULT_MIXIN_V0 = 3;
 
@@ -181,7 +183,7 @@ namespace CryptoNote
         /* 25 trillion atomic, or 250 billion TRTL -> Max supply / mixin+1 outputs */
         /* This is enforced on the daemon side. An output > 250 billion causes
          * an invalid block. */
-        const uint64_t MAX_OUTPUT_SIZE_NODE   = 250'000'000'000'00;
+        const uint64_t MAX_OUTPUT_SIZE_NODE = 250'000'000'000'00;
 
         /* 100 billion atomic, or 1 billion TRTL */
         /* This is enforced on the client side. An output > 1 billion will not
@@ -242,9 +244,11 @@ namespace CryptoNote
 
         const uint32_t UPGRADE_HEIGHT_V5 = 1200000; // Upgrade height for CN-Turtle Variant 2 switch.
 
-        const uint32_t UPGRADE_HEIGHT_V6 = 1800000; // Upgrade height for Chukwa switch.
+        const uint32_t UPGRADE_HEIGHT_V6 = 1800000; // Upgrade height for Chukwa v1 switch.
 
-        const uint32_t UPGRADE_HEIGHT_CURRENT = UPGRADE_HEIGHT_V6;
+        const uint32_t UPGRADE_HEIGHT_V7 = 3000000; // Upgrade height for Chukwa v2 switch
+
+        const uint32_t UPGRADE_HEIGHT_CURRENT = UPGRADE_HEIGHT_V7;
 
         const unsigned UPGRADE_VOTING_THRESHOLD = 90; // percent
         const uint32_t UPGRADE_VOTING_WINDOW = EXPECTED_NUMBER_OF_BLOCKS_PER_DAY; // blocks
@@ -272,10 +276,20 @@ namespace CryptoNote
             2600000, // 15
             2800000, // 16
             3000000, // 17
+            3200000, // 18
+            3400000, // 19
+            3600000, // 20
+            3800000, // 21
+            4000000, // 22
+            4200000, // 23
+            4400000, // 24
+            4600000, // 25
+            4800000, // 26
+            5000000, // 27
         };
 
         /* MAKE SURE TO UPDATE THIS VALUE WITH EVERY MAJOR RELEASE BEFORE A FORK */
-        const uint64_t SOFTWARE_SUPPORTED_FORK_INDEX = 16;
+        const uint64_t SOFTWARE_SUPPORTED_FORK_INDEX = 17;
 
         const uint64_t FORK_HEIGHTS_SIZE = sizeof(FORK_HEIGHTS) / sizeof(*FORK_HEIGHTS);
 
@@ -317,6 +331,7 @@ namespace CryptoNote
     const uint8_t BLOCK_MAJOR_VERSION_4 = 4; /* UPGRADE_HEIGHT_V4 */
     const uint8_t BLOCK_MAJOR_VERSION_5 = 5; /* UPGRADE_HEIGHT_V5 */
     const uint8_t BLOCK_MAJOR_VERSION_6 = 6; /* UPGRADE_HEIGHT_V6 */
+    const uint8_t BLOCK_MAJOR_VERSION_7 = 7; /* UPGRADE_HEIGHT_V7 */
 
     const uint8_t BLOCK_MINOR_VERSION_0 = 0;
 
@@ -329,7 +344,8 @@ namespace CryptoNote
             {BLOCK_MAJOR_VERSION_3, Crypto::cn_slow_hash_v0}, /* UPGRADE_HEIGHT_V3 */
             {BLOCK_MAJOR_VERSION_4, Crypto::cn_lite_slow_hash_v1}, /* UPGRADE_HEIGHT_V4 */
             {BLOCK_MAJOR_VERSION_5, Crypto::cn_turtle_lite_slow_hash_v2}, /* UPGRADE_HEIGHT_V5 */
-            {BLOCK_MAJOR_VERSION_6, Crypto::chukwa_slow_hash} /* UPGRADE_HEIGHT_V6 */
+            {BLOCK_MAJOR_VERSION_6, Crypto::chukwa_slow_hash_v1}, /* UPGRADE_HEIGHT_V6 */
+            {BLOCK_MAJOR_VERSION_7, Crypto::chukwa_slow_hash_v2} /* UPGRADE_HEIGHT_V7 */
     };
 
     const size_t BLOCKS_IDS_SYNCHRONIZING_DEFAULT_COUNT = 10000; // by default, blocks ids count in synchronizing
@@ -348,9 +364,9 @@ namespace CryptoNote
 
     // P2P Network Configuration Section - This defines our current P2P network version
     // and the minimum version for communication between nodes
-    const uint8_t P2P_CURRENT_VERSION = 11;
+    const uint8_t P2P_CURRENT_VERSION = 12;
 
-    const uint8_t P2P_MINIMUM_VERSION = 10;
+    const uint8_t P2P_MINIMUM_VERSION = 11;
 
     // This defines the minimum P2P version required for lite blocks propogation
     const uint8_t P2P_LITE_BLOCKS_PROPOGATION_VERSION = 4;

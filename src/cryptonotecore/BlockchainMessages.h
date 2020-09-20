@@ -105,7 +105,8 @@ namespace CryptoNote
       private:
         const Type type;
 
-        union {
+        union
+        {
             NewBlock newBlock;
             NewAlternativeBlock newAlternativeBlock;
             ChainSwitch *chainSwitch;

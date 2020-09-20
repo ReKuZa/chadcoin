@@ -47,7 +47,8 @@ namespace CryptoNote
       private:
         const TransactionMessageType type;
 
-        union {
+        union
+        {
             const AddTransaction addTransaction;
             const DeleteTransaction deleteTransaction;
         };

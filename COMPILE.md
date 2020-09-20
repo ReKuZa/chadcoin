@@ -38,11 +38,8 @@ However, if you wish to create _portable_ binaries that can be shared between sy
 
 ##### Ubuntu with GCC
 
--   `sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y`
--   `sudo apt-get update`
--   `sudo apt-get install aptitude -y`
--   `sudo aptitude install -y build-essential g++-8 gcc-8 git libboost-all-dev python-pip libssl-dev`
--   `sudo pip install cmake`
+-   `sudo apt update`
+-   `sudo apt install -y libboost-all-dev libssl-dev gcc-8 g++-8 cmake`
 -   `export CC=gcc-8`
 -   `export CXX=g++-8`
 -   `git clone -b master --single-branch https://github.com/turtlecoin/turtlecoin`
@@ -146,7 +143,7 @@ The binaries will be in the `src` folder when you are complete.
 
 -   `which brew || /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"`
 -   `brew install --force cmake boost llvm@8 openssl`
--   `brew link --force llvm@8`
+-   `brew link --overwrite llvm@8`
 -   `ln -s /usr/local/opt/llvm@8 /usr/local/opt/llvm`
 -   `export CC=/usr/local/opt/llvm@8/bin/clang`
 -   `export CXX=/usr/local/opt/llvm@8/bin/clang++`

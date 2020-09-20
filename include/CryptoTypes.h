@@ -5,11 +5,11 @@
 
 #pragma once
 
-#include "json.hpp"
 #include "rapidjson/document.h"
 #include "rapidjson/stringbuffer.h"
 #include "rapidjson/writer.h"
 
+#include <JsonHelper.h>
 #include <algorithm>
 #include <common/StringTools.h>
 #include <cstdint>
@@ -50,6 +50,26 @@ namespace Crypto
         void toJSON(rapidjson::Writer<rapidjson::StringBuffer> &writer) const
         {
             writer.String(Common::podToHex(data));
+        }
+
+        void fromJSON(const JSONValue &j)
+        {
+            if (j.IsString())
+            {
+                fromString(j.GetString());
+            }
+        }
+
+        void fromJSON(const JSONValue &j, const std::string &key)
+        {
+            auto val = j.FindMember(key);
+
+            if (val == j.MemberEnd())
+            {
+                throw std::invalid_argument("Missing JSON parameter: '" + key + "'");
+            }
+
+            fromJSON(val->value);
         }
 
         /* Initializes the class from a json string */
@@ -99,6 +119,26 @@ namespace Crypto
             writer.String(Common::podToHex(data));
         }
 
+        void fromJSON(const JSONValue &j)
+        {
+            if (j.IsString())
+            {
+                fromString(j.GetString());
+            }
+        }
+
+        void fromJSON(const JSONValue &j, const std::string &key)
+        {
+            auto val = j.FindMember(key);
+
+            if (val == j.MemberEnd())
+            {
+                throw std::invalid_argument("Missing JSON parameter: '" + key + "'");
+            }
+
+            fromJSON(val->value);
+        }
+
         /* Initializes the class from a json string */
         void fromString(const std::string &s)
         {
@@ -131,6 +171,26 @@ namespace Crypto
         void toJSON(rapidjson::Writer<rapidjson::StringBuffer> &writer) const
         {
             writer.String(Common::podToHex(data));
+        }
+
+        void fromJSON(const JSONValue &j)
+        {
+            if (j.IsString())
+            {
+                fromString(j.GetString());
+            }
+        }
+
+        void fromJSON(const JSONValue &j, const std::string &key)
+        {
+            auto val = j.FindMember(key);
+
+            if (val == j.MemberEnd())
+            {
+                throw std::invalid_argument("Missing JSON parameter: '" + key + "'");
+            }
+
+            fromJSON(val->value);
         }
 
         /* Initializes the class from a json string */
@@ -176,6 +236,26 @@ namespace Crypto
         void toJSON(rapidjson::Writer<rapidjson::StringBuffer> &writer) const
         {
             writer.String(Common::podToHex(data));
+        }
+
+        void fromJSON(const JSONValue &j)
+        {
+            if (j.IsString())
+            {
+                fromString(j.GetString());
+            }
+        }
+
+        void fromJSON(const JSONValue &j, const std::string &key)
+        {
+            auto val = j.FindMember(key);
+
+            if (val == j.MemberEnd())
+            {
+                throw std::invalid_argument("Missing JSON parameter: '" + key + "'");
+            }
+
+            fromJSON(val->value);
         }
 
         /* Initializes the class from a json string */
@@ -225,6 +305,26 @@ namespace Crypto
             writer.String(Common::podToHex(data));
         }
 
+        void fromJSON(const JSONValue &j)
+        {
+            if (j.IsString())
+            {
+                fromString(j.GetString());
+            }
+        }
+
+        void fromJSON(const JSONValue &j, const std::string &key)
+        {
+            auto val = j.FindMember(key);
+
+            if (val == j.MemberEnd())
+            {
+                throw std::invalid_argument("Missing JSON parameter: '" + key + "'");
+            }
+
+            fromJSON(val->value);
+        }
+
         /* Initializes the class from a json string */
         void fromString(const std::string &s)
         {
@@ -270,6 +370,26 @@ namespace Crypto
         void toJSON(rapidjson::Writer<rapidjson::StringBuffer> &writer) const
         {
             writer.String(Common::podToHex(data));
+        }
+
+        void fromJSON(const JSONValue &j)
+        {
+            if (j.IsString())
+            {
+                fromString(j.GetString());
+            }
+        }
+
+        void fromJSON(const JSONValue &j, const std::string &key)
+        {
+            auto val = j.FindMember(key);
+
+            if (val == j.MemberEnd())
+            {
+                throw std::invalid_argument("Missing JSON parameter: '" + key + "'");
+            }
+
+            fromJSON(val->value);
         }
 
         /* Initializes the class from a json string */
@@ -319,6 +439,26 @@ namespace Crypto
             writer.String(Common::podToHex(data));
         }
 
+        void fromJSON(const JSONValue &j)
+        {
+            if (j.IsString())
+            {
+                fromString(j.GetString());
+            }
+        }
+
+        void fromJSON(const JSONValue &j, const std::string &key)
+        {
+            auto val = j.FindMember(key);
+
+            if (val == j.MemberEnd())
+            {
+                throw std::invalid_argument("Missing JSON parameter: '" + key + "'");
+            }
+
+            fromJSON(val->value);
+        }
+
         /* Initializes the class from a json string */
         void fromString(const std::string &s)
         {
@@ -364,6 +504,26 @@ namespace Crypto
         void toJSON(rapidjson::Writer<rapidjson::StringBuffer> &writer) const
         {
             writer.String(Common::podToHex(data));
+        }
+
+        void fromJSON(const JSONValue &j)
+        {
+            if (j.IsString())
+            {
+                fromString(j.GetString());
+            }
+        }
+
+        void fromJSON(const JSONValue &j, const std::string &key)
+        {
+            auto val = j.FindMember(key);
+
+            if (val == j.MemberEnd())
+            {
+                throw std::invalid_argument("Missing JSON parameter: '" + key + "'");
+            }
+
+            fromJSON(val->value);
         }
 
         /* Initializes the class from a json string */
@@ -412,81 +572,6 @@ namespace Crypto
     inline size_t hash_value(const KeyImage &keyImage)
     {
         return reinterpret_cast<const size_t &>(keyImage);
-    }
-
-    inline void to_json(nlohmann::json &j, const Hash &h)
-    {
-        j = Common::podToHex(h);
-    }
-
-    inline void from_json(const nlohmann::json &j, Hash &h)
-    {
-        if (!Common::podFromHex(j.get<std::string>(), h.data))
-        {
-            const auto err = nlohmann::detail::parse_error::create(100, 0, "Wrong length or not hex!");
-
-            throw nlohmann::json::parse_error(err);
-        }
-    }
-
-    inline void to_json(nlohmann::json &j, const PublicKey &p)
-    {
-        j = Common::podToHex(p);
-    }
-
-    inline void from_json(const nlohmann::json &j, PublicKey &p)
-    {
-        if (!Common::podFromHex(j.get<std::string>(), p.data))
-        {
-            const auto err = nlohmann::detail::parse_error::create(100, 0, "Wrong length or not hex!");
-
-            throw nlohmann::json::parse_error(err);
-        }
-    }
-
-    inline void to_json(nlohmann::json &j, const SecretKey &s)
-    {
-        j = Common::podToHex(s);
-    }
-
-    inline void from_json(const nlohmann::json &j, SecretKey &s)
-    {
-        if (!Common::podFromHex(j.get<std::string>(), s.data))
-        {
-            const auto err = nlohmann::detail::parse_error::create(100, 0, "Wrong length or not hex!");
-
-            throw nlohmann::json::parse_error(err);
-        }
-    }
-
-    inline void to_json(nlohmann::json &j, const KeyDerivation &k)
-    {
-        j = Common::podToHex(k);
-    }
-
-    inline void from_json(const nlohmann::json &j, KeyDerivation &k)
-    {
-        if (!Common::podFromHex(j.get<std::string>(), k.data))
-        {
-            const auto err = nlohmann::detail::parse_error::create(100, 0, "Wrong length or not hex!");
-
-            throw nlohmann::json::parse_error(err);
-        }
-    }
-
-    inline void to_json(nlohmann::json &j, const KeyImage &k)
-    {
-        j = Common::podToHex(k);
-    }
-
-    inline void from_json(const nlohmann::json &j, KeyImage &k)
-    {
-        if (!Common::podFromHex(j.get<std::string>(), k.data))
-        {
-            const auto err = nlohmann::detail::parse_error::create(100, 0, "Wrong length or not hex!");
-
-            throw nlohmann::json::parse_error(err);
-        }
     }
 } // namespace Crypto
 

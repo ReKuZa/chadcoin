@@ -14,6 +14,4 @@ namespace ZedUtilities
 {
     void confirmPassword(const std::shared_ptr<WalletBackend> walletBackend, const std::string msg);
 
-    uint64_t getScanHeight();
-
 } // namespace ZedUtilities

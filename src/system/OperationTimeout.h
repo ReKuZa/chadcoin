@@ -15,9 +15,7 @@ namespace System
     {
       public:
         OperationTimeout(Dispatcher &dispatcher, T &object, std::chrono::nanoseconds timeout):
-            object(object),
-            timerContext(dispatcher),
-            timeoutTimer(dispatcher)
+            object(object), timerContext(dispatcher), timeoutTimer(dispatcher)
         {
             timerContext.spawn([this, timeout]() {
                 try

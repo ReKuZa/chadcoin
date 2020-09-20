@@ -29,6 +29,7 @@ ZedConfig parseArguments(int argc, char **argv)
     std::string remoteDaemon;
 
     int logLevel;
+    int reset;
 
     unsigned int threads;
 
@@ -54,36 +55,40 @@ ZedConfig parseArguments(int argc, char **argv)
 #endif
         ;
 
-    options.add_options("Wallet")
-        ("w,wallet-file",
-         "Open the wallet <file>",
-         cxxopts::value<std::string>(config.walletFile),
-         "<file>")
+    options.add_options("Wallet")(
+        "w,wallet-file", "Open the wallet <file>", cxxopts::value<std::string>(config.walletFile), "<file>")
 
         ("p,password",
          "Use the password <pass> to open the wallet",
          cxxopts::value<std::string>(config.walletPass),
          "<pass>")
 
-        ("log-level",
-         "Specify log level",
-         cxxopts::value<int>(logLevel)->default_value(std::to_string(config.logLevel)),
-         "#")
+            ("reset",
+             "Recheck the chain from a specific block for transactions",
+             cxxopts::value<int>(reset),
+             "<block height>")
 
-        ("log-file",
-         "Specify filepath to log to. Logging to file is disabled by default",
-         cxxopts::value<std::string>(logFilePath),
-         "<file>")
+                ("log-level",
+                 "Specify log level",
+                 cxxopts::value<int>(logLevel)->default_value(std::to_string(config.logLevel)),
+                 "#")
 
-        ("threads",
-         "Specify number of wallet sync threads",
-         cxxopts::value<unsigned int>(threads)->default_value(
-         std::to_string(std::max(1u, std::thread::hardware_concurrency()))),
-         "#")
+                    ("log-file",
+                     "Specify filepath to log to. Logging to file is disabled by default",
+                     cxxopts::value<std::string>(logFilePath),
+                     "<file>")
 
-        ("scan-coinbase-transactions",
-         "Scan miner/coinbase transactions",
-         cxxopts::value<bool>(scanCoinbaseTransactions)->default_value("false")->implicit_value("true"));
+                        ("threads",
+                         "Specify number of wallet sync threads",
+                         cxxopts::value<unsigned int>(threads)->default_value(
+                             std::to_string(std::max(1u, std::thread::hardware_concurrency()))),
+                         "#")
+
+                            ("scan-coinbase-transactions",
+                             "Scan miner/coinbase transactions",
+                             cxxopts::value<bool>(scanCoinbaseTransactions)
+                                 ->default_value("false")
+                                 ->implicit_value("true"));
 
     try
     {
@@ -93,6 +98,14 @@ ZedConfig parseArguments(int argc, char **argv)
 
         /* We could check if the string is empty, but an empty password is valid */
         config.passGiven = result.count("password") != 0;
+
+        /* check if reset flag was supplied */
+        config.resetGiven = result.count("reset") != 0;
+
+        if (config.resetGiven)
+        {
+            config.resetFromHeight = reset;
+        }
     }
     catch (const cxxopts::OptionException &e)
     {
