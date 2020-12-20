@@ -157,7 +157,7 @@ add_dependencies(WalletApi version)
 add_dependencies(zedwallet++ version)
 
 # Finally build the binaries
-set_property(TARGET TurtleCoind PROPERTY OUTPUT_NAME "chadcoind")
+set_property(TARGET TurtleCoind PROPERTY OUTPUT_NAME "ChadCoind")
 set_property(TARGET zedwallet++ PROPERTY OUTPUT_NAME "chadwallet")
 set_property(TARGET miner PROPERTY OUTPUT_NAME "miner")
 set_property(TARGET cryptotest PROPERTY OUTPUT_NAME "cryptotest")
