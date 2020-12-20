@@ -205,7 +205,11 @@ namespace CryptoNote
                           << 2 * medianSize;
             return false;
         }
-
+        if (currentBlockSize == 1)
+        {
+            reward = 10000000000000;
+            return true;
+        }
         uint64_t penalizedBaseReward = getPenalizedAmount(baseReward, medianSize, currentBlockSize);
         uint64_t penalizedFee =
             blockMajorVersion >= BLOCK_MAJOR_VERSION_2 ? getPenalizedAmount(fee, medianSize, currentBlockSize) : fee;
