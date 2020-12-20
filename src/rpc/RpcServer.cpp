@@ -82,11 +82,11 @@ RpcServer::RpcServer(
 
         .Get(
             "/block/" + m_hashRegex, /* /block/{hash} */
-            router(&RpcServer::getBlockHeaderByHash, RpcMode::BlockExplorerEnabled, bodyNotRequired, syncNotRequired))
+            router(&RpcServer::getBlockHeaderByHash, RpcMode::Default, bodyNotRequired, syncNotRequired))
 
         .Get(
             "/block/(\\d+)", /* /block/{height} */
-            router(&RpcServer::getBlockHeaderByHeight, RpcMode::BlockExplorerEnabled, bodyNotRequired, syncNotRequired))
+            router(&RpcServer::getBlockHeaderByHeight, RpcMode::Default, bodyNotRequired, syncNotRequired))
 
         .Get(
             "/block/" + m_hashRegex + "/raw", /* /block/{hash}/raw */

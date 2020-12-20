@@ -20,7 +20,7 @@ namespace CryptoNote
 {
     namespace parameters
     {
-        const uint64_t DIFFICULTY_TARGET = 30; // seconds
+        const uint64_t DIFFICULTY_TARGET = 60; // seconds
 
         const uint32_t CRYPTONOTE_MAX_BLOCK_NUMBER = 500000000;
 
@@ -28,9 +28,9 @@ namespace CryptoNote
 
         const size_t CRYPTONOTE_MAX_TX_SIZE = 1000000000;
 
-        const uint64_t CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX = 3914525;
+        const uint64_t CRYPTONOTE_PUBLIC_ADDRESS_BASE58_PREFIX = 2816722;
 
-        const uint32_t CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW = 40;
+        const uint32_t CRYPTONOTE_MINED_MONEY_UNLOCK_WINDOW = 20;
 
         const uint64_t CRYPTONOTE_BLOCK_FUTURE_TIME_LIMIT = 60 * 60 * 2;
 
@@ -86,10 +86,10 @@ namespace CryptoNote
 
         const size_t CRYPTONOTE_COINBASE_BLOB_RESERVED_SIZE = 600;
 
-        const size_t CRYPTONOTE_DISPLAY_DECIMAL_POINT = 2;
+        const size_t CRYPTONOTE_DISPLAY_DECIMAL_POINT = 6;
 
         /* TODO: Remove? */
-        const uint64_t MINIMUM_FEE = UINT64_C(10);
+        const uint64_t MINIMUM_FEE = UINT64_C(10000);
 
         /* Fee per byte is rounded up in chunks. This helps makes estimates
          * more accurate. It's suggested to make this a power of two, to relate
@@ -136,7 +136,7 @@ namespace CryptoNote
 
         const uint64_t DEFAULT_MIXIN_V3 = MAXIMUM_MIXIN_V3;
 
-        const uint64_t DEFAULT_DUST_THRESHOLD = UINT64_C(10);
+        const uint64_t DEFAULT_DUST_THRESHOLD = UINT64_C(10000);
 
         const uint64_t DEFAULT_DUST_THRESHOLD_V2 = UINT64_C(0);
 
@@ -317,7 +317,7 @@ namespace CryptoNote
         const char MINER_CONFIG_FILE_NAME[] = "miner_conf.json";
     } // namespace parameters
 
-    const char CRYPTONOTE_NAME[] = "TurtleCoin";
+    const char CRYPTONOTE_NAME[] = "ChadCoin";
 
     const uint8_t TRANSACTION_VERSION_1 = 1;
 
@@ -352,9 +352,9 @@ namespace CryptoNote
     const uint64_t BLOCKS_SYNCHRONIZING_DEFAULT_COUNT = 100; // by default, blocks count in blocks downloading
     const size_t COMMAND_RPC_GET_BLOCKS_FAST_MAX_COUNT = 1000;
 
-    const int P2P_DEFAULT_PORT = 11897;
+    const int P2P_DEFAULT_PORT = 3999;
 
-    const int RPC_DEFAULT_PORT = 11898;
+    const int RPC_DEFAULT_PORT = 3997;
 
     const int SERVICE_DEFAULT_PORT = 8070;
 
@@ -400,19 +400,14 @@ namespace CryptoNote
     const uint64_t LEVELDB_MAX_OPEN_FILES = 128; // 128 files
     const uint64_t LEVELDB_MAX_FILE_SIZE_MB = 1024; // 1024MB = 1GB
 
-    const char LATEST_VERSION_URL[] = "http://latest.turtlecoin.lol";
+    const char LATEST_VERSION_URL[] = "https://github.com/rekuza/chadcoin/releases/latest";
 
-    const std::string LICENSE_URL = "https://github.com/turtlecoin/turtlecoin/blob/master/LICENSE";
+    const std::string LICENSE_URL = "https://github.com/rekuza/chadcoin/blob/master/LICENSE";
 
     const static boost::uuids::uuid CRYPTONOTE_NETWORK = {
-        {0xb5, 0x0c, 0x4a, 0x6c, 0xcf, 0x52, 0x57, 0x41, 0x65, 0xf9, 0x91, 0xa4, 0xb6, 0xc1, 0x43, 0xe9}};
+        {0xb5, 0x0c, 0x4a, 0x6c, 0x5f, 0x52, 0x57, 0x41, 0x65, 0xf9, 0x91, 0xa9, 0xa6, 0xf1, 0x43, 0xe9}};
 
     const char *const SEED_NODES[] = {
         "145.239.88.119:11897", // cision
-        "165.227.252.132:11897", // iburnmycd
-        "148.251.178.238:11897", // hv
-        "45.32.138.7:11897", // extra
-        "46.214.70.196:11897", // CuveeRO
-        "94.113.119.122:11897" // CuveeCZ
     };
 } // namespace CryptoNote
