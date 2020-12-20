@@ -1,12 +1,12 @@
 ![image](https://cdn.discordapp.com/attachments/735046515982073949/790150915315204096/PicsArt_12-20-01.25.23.png)
 
-#### ChadCoin is a fun, fast, and easy way to send money to friends and businesses
+#### ChadCoin is a currency made for chads to advanced chads from the bank user virgins
 
 [![Discord](https://img.shields.io/discord/388915017187328002?label=ChadCoin%20Discord)](https://discord.gg/QVMsYcrvug) [![GitHub All Releases](https://img.shields.io/github/downloads/rekuza/chadcoin/total?label=Downloads)](https://github.com/rekuza/chadcoin/releases/latest) [![GitHub contributors](https://img.shields.io/github/contributors-anon/rekuza/chadcoin?label=Contributors)](https://github.com/rekuza/chadcoin/graphs/contributors) [![GitHub issues](https://img.shields.io/github/issues/rekuza/chadcoin?label=Issues)](https://github.com/rekuza/chadcoin/issues) ![GitHub stars](https://img.shields.io/github/stars/rekuza/chadcoin?label=Github%20Stars)
 
 ### Contributing to ChadCoin
 
-We are a community of people across the world giving our time to make this software better. There are many ways you can help or join us:
+We are the chad developers across the world giving our time to make this software better. There are many ways you can help or join us:
 
 -   If you'd like to report a bug, [fill out a bug report](https://github.com/rekuza/chadcoin/issues/new?template=bug_report.md)
 -   If you'd like to submit code for a bug you fixed, [submit a pull-request](https://github.com/rekuza/chadcoin/compare)
