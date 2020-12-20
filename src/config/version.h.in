@@ -4,10 +4,10 @@
 #define PROJECT_NAME "ChadCoin"
 #define PROJECT_SITE "http://chadcoin.surge.sh"
 #define PROJECT_COPYRIGHT "Copyright 2020, ReKuZa Studios"
-#define APP_VER_MAJOR 1
+#define APP_VER_MAJOR 0
 #define APP_VER_MINOR 0
 #define APP_VER_REV 0
-#define APP_VER_BUILD 2000
+#define APP_VER_BUILD 1
 
 #define BUILD_COMMIT_ID "@VERSION@"
 #define PROJECT_VERSION STR(APP_VER_MAJOR) "." STR(APP_VER_MINOR) "." STR(APP_VER_REV)
