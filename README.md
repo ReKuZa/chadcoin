@@ -2,7 +2,7 @@
 
 #### ChadCoin is a currency made for chads to advanced chads from the bank user virgins
 
-[![Discord](https://img.shields.io/discord/707190822130679839?label=ChadCoin%20Discord)](https://discord.gg/QVMsYcrvug) [![GitHub All Releases](https://img.shields.io/github/downloads/rekuza/chadcoin/total?label=Downloads)](https://github.com/rekuza/chadcoin/releases/latest) [![GitHub contributors](https://img.shields.io/github/contributors-anon/rekuza/chadcoin?label=Contributors)](https://github.com/rekuza/chadcoin/graphs/contributors) [![GitHub issues](https://img.shields.io/github/issues/rekuza/chadcoin?label=Issues)](https://github.com/rekuza/chadcoin/issues) ![GitHub stars](https://img.shields.io/github/stars/rekuza/chadcoin?label=Github%20Stars)
+[![Discord](https://img.shields.io/discord/735046515982073946?label=ChadCoin%20Discord)](https://discord.gg/QVMsYcrvug) [![GitHub All Releases](https://img.shields.io/github/downloads/rekuza/chadcoin/total?label=Downloads)](https://github.com/rekuza/chadcoin/releases/latest) [![GitHub contributors](https://img.shields.io/github/contributors-anon/rekuza/chadcoin?label=Contributors)](https://github.com/rekuza/chadcoin/graphs/contributors) [![GitHub issues](https://img.shields.io/github/issues/rekuza/chadcoin?label=Issues)](https://github.com/rekuza/chadcoin/issues) ![GitHub stars](https://img.shields.io/github/stars/rekuza/chadcoin?label=Github%20Stars)
 
 ### Contributing to ChadCoin
 
