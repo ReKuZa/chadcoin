@@ -400,9 +400,9 @@ namespace CryptoNote
     const uint64_t LEVELDB_MAX_OPEN_FILES = 128; // 128 files
     const uint64_t LEVELDB_MAX_FILE_SIZE_MB = 1024; // 1024MB = 1GB
 
-    const char LATEST_VERSION_URL[] = "http://latest.turtlecoin.lol";
+    const char LATEST_VERSION_URL[] = "https://github.com/rekuza/chadcoin/releases/latest";
 
-    const std::string LICENSE_URL = "https://github.com/turtlecoin/turtlecoin/blob/master/LICENSE";
+    const std::string LICENSE_URL = "https://github.com/rekuza/chadcoin/blob/master/LICENSE";
 
     const static boost::uuids::uuid CRYPTONOTE_NETWORK = {
         {0xb5, 0x0c, 0x4a, 0x6c, 0x5f, 0x52, 0x57, 0x41, 0x65, 0xf9, 0x91, 0xa9, 0xa6, 0xf1, 0x43, 0xe9}};
