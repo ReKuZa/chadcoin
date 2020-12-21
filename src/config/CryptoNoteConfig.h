@@ -339,13 +339,13 @@ namespace CryptoNote
 
     const std::unordered_map<uint8_t, std::function<void(const void *data, size_t length, Crypto::Hash &hash)>>
         HASHING_ALGORITHMS_BY_BLOCK_VERSION = {
-            {BLOCK_MAJOR_VERSION_1, Crypto::cn_slow_hash_v0}, /* From zero */
-            {BLOCK_MAJOR_VERSION_2, Crypto::cn_slow_hash_v0}, /* UPGRADE_HEIGHT_V2 */
-            {BLOCK_MAJOR_VERSION_3, Crypto::cn_slow_hash_v0}, /* UPGRADE_HEIGHT_V3 */
-            {BLOCK_MAJOR_VERSION_4, Crypto::cn_lite_slow_hash_v1}, /* UPGRADE_HEIGHT_V4 */
-            {BLOCK_MAJOR_VERSION_5, Crypto::cn_turtle_lite_slow_hash_v2}, /* UPGRADE_HEIGHT_V5 */
-            {BLOCK_MAJOR_VERSION_6, Crypto::chukwa_slow_hash_v1}, /* UPGRADE_HEIGHT_V6 */
-            {BLOCK_MAJOR_VERSION_7, Crypto::chukwa_slow_hash_v2} /* UPGRADE_HEIGHT_V7 */
+            {BLOCK_MAJOR_VERSION_1, Crypto::cn_lite_slow_hash_v0}, /* From zero */
+            {BLOCK_MAJOR_VERSION_2, Crypto::cn_chad_lite_slow_hash_v0}, /* UPGRADE_HEIGHT_V2 */
+            {BLOCK_MAJOR_VERSION_3, Crypto::cn_chad_lite_slow_hash_v1}, /* UPGRADE_HEIGHT_V3 */
+            {BLOCK_MAJOR_VERSION_4, Crypto::cn_chad_lite_slow_hash_v2}, /* UPGRADE_HEIGHT_V4 */
+            {BLOCK_MAJOR_VERSION_5, Crypto::cn_chad_slow_hash_v0}, /* UPGRADE_HEIGHT_V5 */
+            {BLOCK_MAJOR_VERSION_6, Crypto::cn_chad_slow_hash_v1}, /* UPGRADE_HEIGHT_V6 */
+            {BLOCK_MAJOR_VERSION_7, Crypto::cn_chad_slow_hash_v2} /* UPGRADE_HEIGHT_V7 */
     };
 
     const size_t BLOCKS_IDS_SYNCHRONIZING_DEFAULT_COUNT = 10000; // by default, blocks ids count in synchronizing
